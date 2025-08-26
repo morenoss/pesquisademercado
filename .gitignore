@@ -1,0 +1,8 @@
+# Automação local (não versionar)
+local_automation/
+scripts_local/
+automation.py
+*.bat
+*.ps1
+*.sh
+.env

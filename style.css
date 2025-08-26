@@ -1,0 +1,215 @@
+/* ==========================================================================
+   STJ — Design tokens (cores, espaçamentos, etc.)
+   Um ÚNICO :root para evitar conflitos
+   ========================================================================== */
+:root{
+  /* Paleta institucional */
+  --stj-primary-700: #004164;   /* azul STJ principal */
+  --stj-primary-600: #004B75;
+  --stj-primary-100: #E6F0FA;   /* azul bem claro p/ fundos */
+
+  --stj-green-700:   #1B5E20;   /* verde institucional */
+  --stj-green-50:    #E7F6EC;
+
+  --stj-amber-500:   #F2C037;   /* amarelo institucional */
+  --stj-amber-50:    #FFF7E0;
+
+  /* Neutros / apoio */
+  --stj-text-900:    #0F172A;
+  --stj-text-700:    #374151;
+  --stj-border:      #DDE5EE;
+  --stj-muted:       #6B7280;
+  --stj-card-50:     #F4F8FB;   /* caixas/painéis leves */
+
+  /* Dimensões comuns */
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+}
+
+/* ==========================================================================
+   Botões (Streamlit usa BaseWeb; cobrimos primary/secondary/download)
+   ========================================================================== */
+.stButton > button,
+.stDownloadButton > button,
+button[kind="primary"]{
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--stj-primary-600) !important;
+  background: var(--stj-primary-700) !important;
+  color: #fff !important;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+  min-height: 42px;
+}
+.stButton > button:hover,
+.stDownloadButton > button:hover,
+button[kind="primary"]:hover{
+  background: var(--stj-primary-600) !important;
+}
+.stButton > button:focus-visible,
+.stDownloadButton > button:focus-visible,
+button[kind="primary"]:focus-visible{
+  outline: none !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--stj-primary-700) 25%, transparent) !important;
+}
+.stButton > button:disabled,
+.stDownloadButton > button:disabled,
+button[kind="primary"]:disabled{
+  opacity:.6; cursor:not-allowed;
+}
+
+/* Secondary */
+button[kind="secondary"]{
+  color: var(--stj-primary-700) !important;
+  border: 1px solid var(--stj-primary-600) !important;
+  background: #fff !important;
+  border-radius: var(--radius-md) !important;
+  min-height: 42px;
+}
+button[kind="secondary"]:hover{
+  background: var(--stj-primary-100) !important;
+}
+
+/* ==========================================================================
+   Tabs — sem fundo, selecionada em negrito + linha inferior azul
+   ========================================================================== */
+.stTabs [data-baseweb="tab-list"]{
+  border-bottom:1px solid #e5e7eb; gap:12px;
+}
+.stTabs [data-baseweb="tab"]{
+  background:transparent !important;
+  color: var(--stj-text-700) !important;
+}
+.stTabs [data-baseweb="tab"]:hover{
+  color: var(--stj-primary-700) !important;
+}
+.stTabs [aria-selected="true"]{
+  background:transparent !important;
+  color: var(--stj-primary-700) !important;
+  font-weight:700 !important;
+}
+.stTabs [data-baseweb="tab-highlight"]{
+  background-color: var(--stj-primary-700) !important;
+  height:3px; bottom:-1px;
+}
+
+/* ==========================================================================
+   Slider — trilho claro, preenchido azul, números AZUIS
+   ========================================================================== */
+/* limpa fundos indesejados do container */
+.stSlider [data-baseweb="slider"],
+.stSlider [data-baseweb="slider"] > div{
+  background: transparent !important;
+}
+/* trilho “fraco” */
+.stSlider [data-baseweb="slider"] div[class*="inner"],
+.stSlider [data-baseweb="slider"] div[class*="Inner"]{
+  background: var(--stj-primary-100) !important;
+}
+/* trilho preenchido */
+.stSlider [data-baseweb="slider"] div[class*="track"],
+.stSlider [data-baseweb="slider"] div[class*="Track"]{
+  background: var(--stj-primary-600) !important;
+}
+/* bolinha */
+.stSlider [role="slider"]{
+  background: var(--stj-primary-700) !important;
+  border: 2px solid #fff !important;
+}
+/* valores e ticks SEM vermelho */
+.stSlider [data-baseweb="slider"] [class*="ThumbValue"],
+.stSlider [data-baseweb="slider"] [class*="value"],
+.stSlider [data-testid="stTickBar"] span,
+.stSlider [data-baseweb="slider"] [class*="tick"],
+.stSlider [data-baseweb="slider"] span[style*="color"],
+.stSlider [data-baseweb="slider"] div[style*="color"]{
+  color: var(--stj-primary-700) !important;
+  background: transparent !important;
+}
+
+/* ==========================================================================
+   Checkbox — amarelo institucional
+   ========================================================================== */
+.stCheckbox input[type="checkbox"]{
+  accent-color: var(--stj-amber-500);
+}
+.stCheckbox [data-baseweb="checkbox"] > label > div:first-child{
+  border: 2px solid var(--stj-amber-500) !important;
+}
+.stCheckbox [data-baseweb="checkbox"] [aria-checked="true"] > div:first-child,
+.stCheckbox [data-baseweb="checkbox"] input:checked + div{
+  background: var(--stj-amber-500) !important;
+  border-color: var(--stj-amber-500) !important;
+}
+
+/* ==========================================================================
+   Cards/Chips dos tipos e “Próximos passos”
+   ========================================================================== */
+/* Selo de seleção (quando quiser usar; opcional) */
+.stj-chip{
+  display:inline-block;
+  margin-top: var(--space-1);
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: .80rem;
+  font-weight: 600;
+  color: var(--stj-primary-700);
+  background: var(--stj-primary-100);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.stj-chip--green{
+  color: var(--stj-green-700);
+  background: var(--stj-green-50);
+}
+.stj-chip--yellow{
+  color: #7A5A00;
+  background: var(--stj-amber-50);
+}
+
+/* Caixas informativas de próximos passos */
+.stj-next{
+  padding: var(--space-3) 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0,0,0,.06);
+  margin-bottom: 10px;
+}
+.stj-next--green{
+  background: var(--stj-green-50);
+  border-color: #CDEAD2;
+}
+.stj-next--yellow{
+  background: var(--stj-amber-50);
+  border-color: #FFE9A8;
+}
+.stj-next__title{
+  margin: 0 0 4px 0;
+  font-weight: 700;
+  color: var(--stj-primary-700);
+}
+.stj-next__desc{
+  margin: 0;
+  color: #2E3A4B;
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   Rodapé institucional
+   ========================================================================== */
+.stj-footer{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--stj-card-50);
+  border-top: 1px solid var(--stj-border);
+  padding: 10px 18px;
+  font-size: .9rem;
+  color: var(--stj-text-900);
+  z-index: 1000;
+}
+.stj-footer a{
+  color: var(--stj-primary-700);
+  text-decoration: none;
+}
+.stj-footer a:hover{ text-decoration: underline; }
+/* margem extra para o conteúdo não ficar coberto */
+.block-container{ padding-bottom: 76px; }

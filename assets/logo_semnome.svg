@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Camada_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 116.9 44" style="enable-background:new 0 0 116.9 44;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;}
+	.st2{fill:#C3D1D9;}
+	.st3{clip-path:url(#SVGID_3_);}
+	.st4{clip-path:url(#SVGID_5_);}
+	.st5{fill:none;}
+	.st6{opacity:0.1;fill:#BFC3C6;}
+	.st7{opacity:0.3;fill:#BFC3C6;}
+	.st8{fill:none;stroke:#E5E5E5;stroke-miterlimit:10;}
+	.st9{opacity:0.8;fill:#FFFFFF;stroke:#BFC3C6;stroke-miterlimit:10;}
+	.st10{fill:#2465A4;}
+	.st11{opacity:0.6;fill:#BFC3C6;}
+	.st12{opacity:0.5;fill:#BFC3C6;}
+	.st13{opacity:0.4;fill:#BFC3C6;}
+	.st14{opacity:0.2;fill:#BFC3C6;}
+	.st15{fill:#F5AF00;}
+	.st16{fill:#FCCC74;}
+	.st17{fill:#004164;}
+	.st18{fill:#1F5836;}
+	.st19{fill:#427591;}
+	.st20{fill:#709078;}
+	.st21{fill:#003F65;}
+	.st22{fill:#007693;}
+	.st23{fill:#FFFFFF;}
+	.st24{opacity:0.8;fill:#C3D1D9;enable-background:new    ;}
+	.st25{fill:#575756;}
+	.st26{fill:#FFCD6F;}
+	.st27{fill:#C73C5E;stroke:#C73A5D;stroke-width:1.5;stroke-miterlimit:10;}
+	.st28{fill:#C73A5D;stroke:#C73A5D;stroke-width:1.5;stroke-miterlimit:10;}
+	.st29{fill:#00698F;}
+	.st30{opacity:0.32;fill:#26404C;}
+	.st31{fill:#026C5B;}
+	.st32{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
+	.st33{fill:#B21F24;}
+	.st34{fill:none;stroke:#FFFFFF;stroke-width:4;stroke-miterlimit:10;}
+	.st35{fill:#DBC553;}
+	.st36{opacity:0.19;fill:#26404C;}
+	.st37{fill:#3B5C7D;}
+	.st38{opacity:0.36;fill:#26404C;}
+	.st39{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st40{fill:#F1F2F3;enable-background:new    ;}
+</style>
+<g class="st0">
+	<g class="st1">
+		<rect id="SVGID_1_" x="2115.7" y="-2005.8" class="st2" width="1547" height="922"/>
+	</g>
+	<g class="st1">
+		<defs>
+			<rect id="SVGID_2_" x="2115.7" y="-2005.8" width="1547" height="922"/>
+		</defs>
+		<clipPath id="SVGID_3_">
+			<use xlink:href="#SVGID_2_"  style="overflow:visible;"/>
+		</clipPath>
+		<g class="st3">
+			
+				<image style="overflow:visible;enable-background:new    ;" width="1920" height="1030" xlink:href="5794810D.jpg"  transform="matrix(1 0 0 1 1934.7015 -2102.8411)">
+			</image>
+		</g>
+	</g>
+	<g class="st1">
+		<defs>
+			<rect id="SVGID_4_" x="2115.7" y="-2005.8" width="1547" height="922"/>
+		</defs>
+		<clipPath id="SVGID_5_">
+			<use xlink:href="#SVGID_4_"  style="overflow:visible;"/>
+		</clipPath>
+		<g class="st4">
+			
+				<image style="overflow:visible;enable-background:new    ;" width="1900" height="30" id="Plano_de_Fundo__x2B__home__x2B__Menu_x5F_lateral__x2B__Header_xA0_Imagem_1_" xlink:href="5794810F.jpg"  transform="matrix(1 0 0 1 2038.7015 -2005.8411)">
+			</image>
+		</g>
+	</g>
+</g>
+<rect x="-241.1" y="-1793.2" class="st5" width="284.8" height="1003.4"/>
+<rect x="25137.8" y="41740" class="st5" width="12892.1" height="920.9"/>
+<rect x="238.1" y="167.2" class="st6" width="1211.1" height="250"/>
+<rect x="-65.5" y="167.2" class="st7" width="303.6" height="28.5"/>
+<g>
+	<text transform="matrix(1 0 0 1 0.5689 146.6498)" class="st25" style="font-family:'FiraSans-Bold'; font-size:16px;">PROCESSOS</text>
+</g>
+<line class="st8" x1="238.1" y1="94.2" x2="238.1" y2="938.2"/>
+<text transform="matrix(1 0 0 1 310.6649 142.4738)" class="st25" style="font-family:'MuseoSans-500'; font-size:34.4245px;">Processos</text>
+<text transform="matrix(1 0 0 1 -6.569396e-04 89.7123)" style="fill:#AFAFAF; font-family:'MuseoSans-300'; font-size:14px;">Você está em: Início | Processos | Consulta Processual</text>
+<rect x="-1" y="150.3" class="st5" width="284.8" height="281.7"/>
+<g>
+	<path class="st9" d="M832.2,331.6H317.5c-4.7,0-8.5-4.2-8.5-9.4V279c0-5.2,3.8-9.4,8.5-9.4h514.7c4.7,0,8.5,4.2,8.5,9.4v43.3
+		C840.7,327.4,836.9,331.6,832.2,331.6z"/>
+	<text transform="matrix(1 0 0 1 310.6649 241.2665)" class="st10" style="font-family:'MuseoSans-500'; font-size:28.3432px;">Consulta Processual</text>
+	<path class="st2" d="M906.9,329.5h-41.5c-5.2,0-9.4-4.2-9.4-9.4v-41.5c0-5.2,4.2-9.4,9.4-9.4h41.5c5.2,0,9.4,4.2,9.4,9.4v41.5
+		C916.2,325.4,912,329.5,906.9,329.5z"/>
+	<g>
+		<text transform="matrix(1 0 0 1 332.6522 361.0819)" class="st10" style="font-family:'Verdana'; font-size:17.5421px;">Pesquisa avançada</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 332.6522 309.6249)" style="fill:#A0A0A0; font-family:'MuseoSans-300'; font-size:21.0506px;">Digite o número do Processo</text>
+	</g>
+	<path class="st10" d="M871.1,296.6c0-6.1,4.5-11.3,10.6-12.2c6.8-0.9,13.1,3.9,13.9,10.7c0.3,2.6-0.2,5.1-1.5,7.5
+		c-0.2,0.4-0.2,0.5,0.1,0.8c3.3,3.3,6.6,6.6,9.9,9.9c1.2,1.2,1.2,2.1,0.1,3.4c-0.4,0.5-0.9,1-1.5,1.3c-0.8,0.5-1.5,0.5-2.2-0.1
+		c-0.3-0.2-0.5-0.4-0.7-0.7c-3.2-3.2-6.5-6.5-9.7-9.7c-0.3-0.3-0.5-0.4-1-0.2c-4.2,2-8.4,2.1-12.3-0.3c-3.5-2.2-5.4-5.5-5.7-9.7
+		C871.2,297.1,871.2,296.9,871.1,296.6z M883.4,304.6c4.5,0,8.1-3.6,8.1-8.1c0-4.5-3.6-8.1-8-8.1c-4.5,0-8.1,3.6-8.1,8
+		C875.3,301,878.9,304.6,883.4,304.6z"/>
+</g>
+<rect x="532.2" y="446" class="st5" width="50.2" height="1.2"/>
+<g>
+	<rect x="236.3" y="417.2" class="st11" width="302.2" height="243.2"/>
+	<rect x="538.5" y="417.2" class="st12" width="302.2" height="243.2"/>
+	<rect x="840.7" y="417.2" class="st13" width="302.2" height="243.2"/>
+	<rect x="1142.8" y="417.2" class="st7" width="302.2" height="243.2"/>
+	<text transform="matrix(0.9998 0 0 1 283.8763 475.5621)" style="enable-background:new    ;"><tspan x="0" y="0" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Guia de Recolhimento</tspan><tspan x="57.4" y="23" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">da União </tspan></text>
+	<g>
+		<text transform="matrix(0.9998 0 0 1 613.1785 475.5621)"><tspan x="0" y="0" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Diário da Justiça</tspan><tspan x="27.9" y="23.1" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Eletrônico</tspan></text>
+	</g>
+	<g>
+		
+			<text transform="matrix(0.9998 0 0 1 900.1859 486.8541)" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Geração de Certidão</text>
+	</g>
+	<g>
+		<g>
+			<text transform="matrix(0.9998 0 0 1 1234.9545 475.5621)"><tspan x="0" y="0" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Sistema Push</tspan><tspan x="-21.2" y="19.2" style="fill:#444543; font-family:'MuseoSans-500'; font-size:16px;">A</tspan><tspan x="-11.2" y="19.2" style="fill:#444543; font-family:'MuseoSans-500'; font-size:16px;">tualização por email</tspan></text>
+		</g>
+	</g>
+</g>
+<g>
+	<rect x="840.7" y="663.3" class="st6" width="603.2" height="297.7"/>
+	<g>
+		<text transform="matrix(1 0 0 1 942.4984 844.163)" class="st10" style="font-family:'Verdana'; font-size:15.1839px;">(61) 3319-8410</text>
+		<text transform="matrix(1 0 0 1 1066.2386 844.163)" class="st25" style="font-family:'Verdana'; font-size:15.1839px;"> </text>
+		<text transform="matrix(1 0 0 1 1073.5541 844.163)" style="enable-background:new    ;"><tspan x="0" y="0" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">(segunda a sexta-fei</tspan><tspan x="157.4" y="0" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">r</tspan><tspan x="163.6" y="0" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">a, das 9h às 19h)</tspan></text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 948.5726 878.4423)" class="st10" style="font-family:'Verdana'; font-size:17.5421px;">informa.processual@stj.jus.br</text>
+	</g>
+	<text transform="matrix(1.1193 0 0 1 919.2366 879.4618)" class="st10" style="font-family:'Verdana-Bold'; font-size:22.0833px;">@</text>
+	<g>
+		<text transform="matrix(1 0 0 1 901.805 737.3549)" class="st10" style="font-family:'MuseoSans-500'; font-size:25.3463px;">Atendimento Judicial</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 901.805 805.6053)" class="st10" style="font-family:'Verdana'; font-size:17.5421px;">Tire aqui</text>
+		<text transform="matrix(1 0 0 1 977.9193 805.6053)" class="st25" style="font-family:'Verdana'; font-size:15.1839px;"> todas as dúvidas sobre processos no STJ</text>
+	</g>
+	<g>
+		<g>
+			<path class="st10" d="M922.7,829.8c4.9-1.8,6.2-1.2,6,2.7c0,0.8,0.1,1.7-0.8,2c-3.7,1.3-2.1,4.1-1.4,6.3c0.7,2.1,1.3,4.9,4.6,3.6
+				c2-0.8,2.2,1.6,3.1,2.7c0.7,0.8,0.5,1.8-0.2,2.6c-1.2,1.3-2.8,1.4-4.1,0.6c-5-2.8-6.8-7.7-7.7-13.3c-0.2-1.5,0.7-3.2-0.8-4.5
+				C922,831.5,922.3,830.6,922.7,829.8z"/>
+		</g>
+	</g>
+</g>
+<g>
+	<rect x="238.1" y="662.8" class="st14" width="602.5" height="297.7"/>
+	<text transform="matrix(1 0 0 1 306.804 736.7235)" class="st10" style="font-family:'MuseoSans-500'; font-size:25.3463px;">Perguntas Frequentes</text>
+	<g>
+		<rect x="348.8" y="769.8" class="st5" width="366" height="146.1"/>
+		<text transform="matrix(1 0 0 1 348.7913 781.3329)"><tspan x="0" y="0" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">BacenJud</tspan><tspan x="0" y="29.4" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Certidões</tspan><tspan x="0" y="58.7" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Consulta Processual</tspan><tspan x="0" y="88.1" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Peticionamento/Central do Processo Eletrônico</tspan><tspan x="0" y="117.4" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Sistema PUSH</tspan></text>
+	</g>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 329.0075 812.1951)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 329.0075 783.1951)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 329.0075 841.5505)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 329.0075 870.906)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 329.0075 899.2493)">
+	</image>
+</g>
+<g>
+	<g>
+		<g>
+			<path class="st15" d="M16.3,23.8c0,8.2-3.8,15.4-9.7,20.2H6.2C2.8,44,0,41.2,0,37.8V0h0.6C9.8,4,16.3,13.1,16.3,23.8L16.3,23.8z"
+				/>
+		</g>
+		<g>
+			<path class="st16" d="M10.2,0c5,5.3,8,12.5,8,20.3c0,9.6-4.5,18.1-11.5,23.6c5.8-4.7,9.6-12,9.6-20.1C16.3,13.1,9.8,4,0.6,0
+				L10.2,0L10.2,0z"/>
+		</g>
+		<g>
+			<path class="st17" d="M34.6,26.3c1.3-3.4,2-7.1,2-11c0-5.6-1.5-10.8-4-15.3h5.3C41.2,0,44,2.8,44,6.2v36.9L34.6,26.3z"/>
+		</g>
+		<g>
+			<path class="st18" d="M34,27.8C30.8,35,25,40.9,17.7,44h25.4L34,27.8z"/>
+		</g>
+		<g>
+			<path class="st19" d="M34.6,26.3c1.3-3.4,2-7.1,2-11c0-5.6-1.5-10.8-4-15.3H19.9L34.6,26.3z"/>
+		</g>
+		<g>
+			<path class="st20" d="M18.5,0h-6.5c4.7,5.5,7.6,12.6,7.6,20.3c0,9.5-4.2,17.9-10.9,23.7h9.1C25,40.9,30.8,35,34,27.8L18.5,0z"/>
+		</g>
+	</g>
+	<g>
+		<g>
+			<path class="st17" d="M116.9,5.8h-14.4v4.9h8.5v15.6c0,5.3-1.7,6.7-5,6.7h-7.1v5.2h7.4c6.3,0,10.6-2.9,10.6-11.7V5.8z"/>
+		</g>
+		<g>
+			<polygon class="st17" points="89.2,10.7 98.9,10.7 98.9,5.8 73.7,5.8 73.7,10.7 83.3,10.7 83.3,38.2 89.2,38.2 			"/>
+		</g>
+		<g>
+			<path class="st17" d="M61.7,13.9c0-1.6,0.9-3.2,4.4-3.2c3,0,4,0,4,0V5.8h-3.9c-6.7,0-10.5,3.4-10.5,8.6c0,4.6,3.4,7.4,8.7,9.3
+				c4.1,1.5,5.7,2.9,5.7,5.3c0,2.4-1.8,3.9-5.2,3.9h-9.2v5.2H64c8.2,0,12.1-4.4,12.1-9.6c0-4.6-2.7-7.4-8.2-9.5
+				C63.6,17.5,61.7,16.4,61.7,13.9L61.7,13.9z"/>
+		</g>
+	</g>
+</g>
+<rect x="-65.5" y="-45" class="st21" width="1511.1" height="29"/>
+<rect x="275.5" y="-45" class="st22" width="29" height="29"/>
+<text transform="matrix(1 0 0 1 619.6031 -24.9274)" style="fill:#07B6D3; font-family:'MyriadPro-Regular'; font-size:15.754px;">SobMedida</text>
+<text transform="matrix(1 0 0 1 697.4232 -24.9274)" style="fill:#3BC3F2; font-family:'MyriadPro-Regular'; font-size:15.754px;">:</text>
+<text transform="matrix(1 0 0 1 701.0031 -24.9274)" style="fill:#BFD5DD; font-family:'MyriadPro-Regular'; font-size:15.754px;">  </text>
+<text transform="matrix(1 0 0 1 708.3132 -24.9274)" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">Advogado |  Servidor  |  Tribunais  </text>
+<text transform="matrix(1 0 0 1 1209.1603 -25.0253)" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">Ouvidoria  |  Acesso Rápido</text>
+<text transform="matrix(1 0 0 1 175.2332 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Institucional</text>
+<text transform="matrix(1 0 0 1 462.777 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Jurisprudência</text>
+<text transform="matrix(1 0 0 1 626.9077 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Repetitivos</text>
+<text transform="matrix(1 0 0 1 762.4556 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Comunicação</text>
+<text transform="matrix(1 0 0 1 907.3493 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Transparência</text>
+<text transform="matrix(1 0 0 1 1059.6969 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Leis e Normas</text>
+<text transform="matrix(1 0 0 1 1209.235 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Contato</text>
+<rect x="945.3" y="12" class="st5" width="0" height="3.8"/>
+<g>
+	<rect x="310.5" y="0" class="st23" width="133" height="56"/>
+</g>
+<text transform="matrix(1 0 0 1 335.2458 29.819)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Processos</text>
+<text transform="matrix(1 0 0 1 175.2332 -25.9271)" style="enable-background:new    ;"><tspan x="0" y="0" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">Acessibilidade:   </tspan><tspan x="107.3" y="0" class="st23" style="font-family:'MyriadPro-Regular'; font-size:15.754px;">A- </tspan><tspan x="125.2" y="0" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">   A+    AA    </tspan></text>
+<g>
+	<rect x="-65.5" y="977" class="st24" width="1512" height="40"/>
+	<g>
+		<text transform="matrix(1 0 0 1 39.169 1002.8394)" class="st10" style="font-family:'Verdana'; font-size:15px;">Como chegar</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 369.1696 1004.8394)" class="st25" style="font-family:'Verdana'; font-size:15px;">SAFS - Quadra 06 - Lote 01 - Trecho III - CEP: 70095-900 - Brasília - DF         +66 61 3319-8000</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 1340.171 1002.8394)" class="st25" style="font-family:'Verdana'; font-size:15px;">Avalie</text>
+	</g>
+	<g>
+		<path class="st10" d="M17.8,983.3c1,0,2.1,0,3.1,0c0,0.2,0.2,0.2,0.3,0.2c0.3,0.1,0.7,0.1,1,0.2c4.5,1.4,7.1,6.1,6,10.4
+			c-0.2,0.9-0.4,1.7-1,2.4c-0.3,0.1-0.4,0.4-0.3,0.6l0,0c-0.3,0.1-0.3,0.3-0.3,0.5c-0.1,0.2-0.3,0.4-0.4,0.7c0,0-0.1,0.1-0.1,0.1
+			l0,0c0,0.1-0.1,0.1-0.1,0.2l0,0c-0.3,0.1-0.4,0.4-0.4,0.7l0,0c-0.2,0-0.2,0.2-0.2,0.3l0,0c-0.3,0.2-0.4,0.4-0.4,0.7v0
+			c-0.1,0-0.1,0.1-0.1,0.2v0h0c-0.2,0-0.2,0.2-0.2,0.4l0,0l0,0c0,0-0.1,0.1-0.1,0.1l0,0c-0.3,0.1-0.4,0.3-0.4,0.6
+			c-0.5,1-1.1,2-1.7,3c-0.3,0.2-0.4,0.5-0.5,0.8c-0.5,1-1,1.9-1.6,2.9c-0.3,0.5-0.6,1-0.8,1.6c-0.1,0-0.1,0-0.2,0
+			c0-0.2-0.1-0.3-0.2-0.4c-1.2-2.1-2.4-4.2-3.6-6.3c-1.2-2-2.3-4.1-3.5-6.1c-3.3-5.2-0.7-11.9,5.3-13.5
+			C17.6,983.5,17.8,983.5,17.8,983.3z M14.1,992.2c-0.1,2.9,2.5,5.5,5.5,5.5c3,0,5.6-2.7,5.6-5.5c0-3-2.4-5.5-5.4-5.6
+			C16.7,986.5,14,989,14.1,992.2z"/>
+		<path class="st10" d="M14.1,992.2c-0.1-3.2,2.6-5.7,5.6-5.6c3,0.1,5.4,2.6,5.4,5.6c0,2.9-2.6,5.5-5.6,5.5
+			C16.6,997.7,14,995.1,14.1,992.2z M19.6,988.9c-1.9,0-3.3,1.5-3.3,3.4c0,1.9,1.7,3.3,3.4,3.3c1.8-0.1,3.3-1.5,3.3-3.4
+			C22.9,990.3,21.4,988.8,19.6,988.9z"/>
+	</g>
+	<g>
+		<g>
+			<path class="st25" d="M945.7,988.2c4.8-1.7,6.1-1.1,5.9,2.5c0,0.8,0.1,1.6-0.8,1.9c-3.6,1.2-2.1,3.8-1.3,5.8
+				c0.7,1.9,1.3,4.5,4.6,3.3c2-0.7,2.2,1.5,3.1,2.5c0.7,0.8,0.5,1.7-0.2,2.4c-1.2,1.2-2.7,1.3-4.1,0.6c-4.9-2.6-6.7-7.1-7.6-12.3
+				c-0.2-1.4,0.7-3-0.8-4.2C945,989.8,945.3,989,945.7,988.2z"/>
+		</g>
+	</g>
+</g>
+<path class="st10" d="M1347.4,17.9c0-5.2,3.9-9.7,9.1-10.4c5.8-0.8,11.2,3.3,11.9,9.2c0.3,2.3-0.2,4.4-1.3,6.4
+	c-0.2,0.3-0.2,0.5,0.1,0.7c2.8,2.8,5.7,5.6,8.5,8.5c1,1,1.1,1.8,0.1,2.9c-0.4,0.4-0.8,0.8-1.2,1.1c-0.7,0.4-1.3,0.4-1.9-0.1
+	c-0.2-0.2-0.4-0.4-0.6-0.6c-2.8-2.8-5.5-5.5-8.3-8.3c-0.3-0.3-0.4-0.3-0.8-0.1c-3.6,1.7-7.2,1.8-10.6-0.3c-3-1.8-4.7-4.7-4.9-8.3
+	C1347.4,18.4,1347.4,18.2,1347.4,17.9z M1357.9,24.8c3.8,0,6.9-3.1,6.9-6.9c0-3.8-3.1-6.9-6.9-6.9c-3.8,0-6.9,3.1-6.9,6.9
+	C1351,21.7,1354.1,24.8,1357.9,24.8z"/>
+<image style="overflow:visible;" width="478" height="477" xlink:href="C:\Users\Thais Lucas\Pictures\temp\component-ac.png"  transform="matrix(9.077100e-02 0 0 9.077100e-02 1400.498 54.4738)">
+</image>
+<g>
+	<text transform="matrix(1 0 0 1 1122.1434 135.6896)"><tspan x="0" y="0" style="fill:#606060; font-family:'Verdana'; font-size:15px;">Sistema indisponível? </tspan><tspan x="168.2" y="0" class="st10" style="font-family:'Verdana'; font-size:15px;">Clique aqui</tspan></text>
+</g>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(1.0123 0 0 1.0123 -19.4008 172.7557)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 -20.9315 287.2793)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 -20.9315 323.2793)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 -20.9315 359.2793)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 -20.9315 395.2793)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 -20.9315 432.2793)">
+</image>
+<g>
+	<path class="st26" d="M1106.3,120c6.3,0,11.5,5.2,11.5,11.6c0,6.3-5.2,11.5-11.6,11.4c-6.3,0-11.4-5.2-11.4-11.5
+		C1094.7,125.1,1099.9,120,1106.3,120z M1113.1,127c-0.1,0.1-0.2,0.2-0.3,0.2c-3.6,3.6-7.2,7.2-10.8,10.8c-0.1,0.1-0.1,0.1-0.2,0.2
+		c-0.1,0.1-0.1,0.2,0,0.3c1.2,0.8,2.6,1.1,4,1.3c0.7,0.1,1.5-0.1,2.2-0.3C1113.8,138.1,1116.1,131.6,1113.1,127z M1099.3,135.9
+		c0.1-0.1,0.1-0.1,0.2-0.1c3.6-3.6,7.3-7.3,10.9-10.9c0.3-0.3,0.2-0.4-0.1-0.5c-1.9-1.1-3.9-1.4-6-0.9
+		C1098.6,124.9,1096.3,131.4,1099.3,135.9z"/>
+</g>
+<text transform="matrix(1 0 0 1 -1.0102 185.9159)" style="enable-background:new    ;"><tspan x="0" y="0" class="st25" style="font-family:'Verdana'; font-size:14px;">Consulta Processual</tspan><tspan x="0" y="36" class="st25" style="font-family:'Verdana'; font-size:14px;">   </tspan><tspan x="14.8" y="36" class="st10" style="font-family:'Verdana'; font-size:13px;">Acesso ao sistema</tspan><tspan x="0" y="65" class="st10" style="font-family:'Verdana'; font-size:13px;">   Como utilizar a ferramenta</tspan><tspan x="0" y="101" class="st25" style="font-family:'Verdana'; font-size:14px;">Peticionamento</tspan><tspan x="0" y="137" class="st25" style="font-family:'Verdana'; font-size:14px;">Despesas Processuais</tspan><tspan x="0" y="173" class="st25" style="font-family:'Verdana'; font-size:14px;">Diário da Justiça Eletrônico</tspan><tspan x="0" y="209" class="st25" style="font-family:'Verdana'; font-size:14px;">Sessões de Julgamento</tspan><tspan x="0" y="245" class="st25" style="font-family:'Verdana'; font-size:14px;">Outros Serviços</tspan></text>
+<g>
+	<path class="st27" d="M930.2,126.9c-0.5,1.4-1,2.7-1.5,4.2c-1-1.2-1.9-2.3-2.9-3.4c0.4-0.1,0.7-0.2,1-0.2c0.3,0,0.4-0.1,0.2-0.4
+		c-0.9-1.9-2.2-3.3-4.1-4.3c-6.1-3.4-13.7,0.8-14.1,7.8c-0.3,5.9,4.6,10.7,10.5,10.1c2.4-0.2,4.5-1.3,6.1-3.1c0.2-0.2,0.3-0.2,0.5,0
+		c0.2,0.2,0.4,0.4,0.6,0.5c0.2,0.2,0.3,0.3,0.1,0.5c-3.2,3.3-7,4.5-11.4,3.2c-4.4-1.3-7.1-4.5-7.8-9.1c-0.7-4.6,1.7-9.1,5.9-11.3
+		c4-2.1,9.1-1.4,12.5,1.6c1.2,1.1,2.2,2.4,2.8,3.9c0.1,0.3,0.2,0.4,0.5,0.3c0.3-0.1,0.6-0.1,0.9-0.2
+		C930.1,126.9,930.2,126.9,930.2,126.9z"/>
+	<path class="st28" d="M919.2,127.7c0,0.6,0,1.3,0,1.9c0,0.2,0,0.4,0.2,0.5c0.1,0.1,0.3,0.2,0.3,0.4c0.1,0.4,0.4,0.5,0.8,0.5
+		c1.6,0.4,3.1,0.8,4.7,1.2c0.2,0.1,0.3,0.1,0.2,0.4c-0.1,0.4-0.1,0.9-0.3,1.1c-0.3,0.2-0.7-0.1-1.1-0.2c-1.3-0.3-2.7-0.7-4-1
+		c-0.2-0.1-0.4,0-0.6,0.1c-0.7,0.5-1.6,0.3-2.1-0.3c-0.5-0.6-0.4-1.6,0.2-2.1c0.2-0.2,0.2-0.3,0.2-0.5c0-1.3,0-2.6,0-3.8
+		c0-0.3,0.1-0.4,0.4-0.4c0.3,0,0.6,0,0.9,0c0.2,0,0.3,0.1,0.3,0.3C919.2,126.4,919.2,127,919.2,127.7z"/>
+</g>
+<g>
+	<text transform="matrix(1 0 0 1 937.261 136.65)" style="fill:#606060; font-family:'Verdana'; font-size:15px;">Plantão Judiciário</text>
+</g>
+<g>
+	<circle class="st29" cx="383.3" cy="571.2" r="50.7"/>
+	<path class="st30" d="M407.2,555.7c0,0,10.2,16.1,22.3,35.4c-15.8,32.9-45.7,30.5-45.7,30.5l-23.2-28.5c-1.1-2.5,0-13.3,0-29.9
+		c0.6-1,2.5-4.2,5.9-7C381.7,556.1,385.6,555.8,407.2,555.7z"/>
+	<g>
+		<g>
+			<path class="st23" d="M400.2,590.1c-0.5,0-0.9,0-1.4,0c0-5.3,0-10.6,0-16c0.5,0,0.9,0,1.4,0C400.2,574.3,400.3,589.7,400.2,590.1
+				z"/>
+			<path class="st23" d="M406.3,590.1c-0.5,0-1.1,0-1.6,0c0-5.3,0-10.6,0-16c0.5,0,1.1,0,1.6,0C406.3,574.3,406.3,589.8,406.3,590.1
+				z"/>
+			<path class="st23" d="M389.8,574.2c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.5,0-1.1,0-1.6,0C389.8,584.8,389.8,579.5,389.8,574.2
+				z"/>
+			<path class="st23" d="M381.7,574.1c0.5,0,1.1,0,1.6,0c0,0.2,0.1,15.7,0,16c-0.5,0-1.1,0-1.6,0C381.7,590,381.6,574.5,381.7,574.1
+				z"/>
+			<path class="st23" d="M361.9,574.2c0.5,0,1.1,0,1.6,0c0,0.2,0.1,15.7,0,16c-0.5,0-1.1,0-1.6,0C361.9,590,361.9,574.4,361.9,574.2
+				z"/>
+			<path class="st23" d="M364.2,574.2c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.1,0-1.3,0.1-1.6,0
+				C364.2,584.8,364.2,579.5,364.2,574.2z"/>
+			<path class="st23" d="M379.4,574.2c0.4,0,0.8,0,1.3,0c0,5.3,0,10.6,0,16c-0.1,0-1,0.1-1.3,0C379.4,584.8,379.4,579.5,379.4,574.2
+				z"/>
+			<path class="st23" d="M403.8,590.1c-0.2,0-0.5,0-0.7,0c0-5.3,0-10.6,0-16c0.2,0,0.5,0,0.7,0C403.8,579.5,403.8,584.8,403.8,590.1
+				z"/>
+			<path class="st23" d="M395.6,574.2c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.5,0-1.1,0-1.6,0C395.6,584.8,395.6,579.5,395.6,574.2
+				z"/>
+			<path class="st23" d="M377.1,574.2c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.5,0-1.1,0-1.6,0C377.1,584.8,377.1,579.5,377.1,574.2
+				z"/>
+			<path class="st23" d="M372.3,574.2c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0C372.3,584.8,372.3,579.5,372.3,574.2
+				z"/>
+			<path class="st23" d="M401.1,574.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0
+				C401.1,590,401.1,574.5,401.1,574.1z"/>
+			<path class="st23" d="M375.8,574.2c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0C375.8,584.8,375.8,579.5,375.8,574.2
+				z"/>
+			<path class="st23" d="M369.4,590.1c-0.2,0-0.4,0-0.6,0c0-5.3,0-10.6,0-16c0.2,0,0.4,0,0.6,0C369.4,574.3,369.4,589.8,369.4,590.1
+				z"/>
+			<path class="st23" d="M386.8,590.1c-0.2,0-0.4,0-0.6,0c0-0.2-0.1-15.6,0-16c0.2,0,0.4,0,0.6,0
+				C386.9,574.3,386.9,589.8,386.8,590.1z"/>
+			<path class="st23" d="M393.3,574.2c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0C393.3,584.8,393.3,579.5,393.3,574.2
+				z"/>
+			<path class="st23" d="M392.1,574.2c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0C392.1,584.8,392.1,579.5,392.1,574.2
+				z"/>
+			<path class="st23" d="M387.5,574.1c0.2,0,0.4,0,0.6,0c0,0.2,0.1,15.7,0,16c-0.2,0-0.4,0-0.6,0C387.5,590,387.5,574.5,387.5,574.1
+				z"/>
+			<path class="st23" d="M384.6,590.1c-0.2,0-0.4,0-0.6,0c0-0.2-0.1-15.6,0-16c0.2,0,0.4,0,0.6,0
+				C384.6,574.3,384.6,589.8,384.6,590.1z"/>
+			<path class="st23" d="M370,574.2c0.2,0,0.4,0,0.6,0c0,0.2,0.1,15.6,0,16c-0.2,0-0.4,0-0.6,0C370,590,370,574.5,370,574.2z"/>
+			<path class="st23" d="M360.3,590.1c-0.2,0-0.4,0-0.6,0c0-5.3,0-10.6,0-16c0.2,0,0.4,0,0.6,0C360.3,579.5,360.3,584.8,360.3,590.1
+				z"/>
+			<path class="st23" d="M366.5,574.2c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0C366.5,584.8,366.5,579.5,366.5,574.2
+				z"/>
+			<path class="st23" d="M373.6,574.2c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0C373.6,584.8,373.6,579.5,373.6,574.2
+				z"/>
+		</g>
+		
+			<text transform="matrix(1.0818 0 0 1 358.617 567.8369)" class="st23" style="font-family:'MuseoSans-900'; font-size:21.0049px;">GRU</text>
+	</g>
+</g>
+<g>
+	<circle class="st31" cx="687" cy="573.4" r="48.5"/>
+	<path class="st30" d="M705.3,550.2c0,0,13.1,21.9,25.7,43c-10.6,28.4-44.2,28.4-44.2,28.4L668,599.4l1.5-49.9L705.3,550.2z"/>
+	<g>
+		<path class="st32" d="M672.6,601.5h28.7c2.2,0,4-1.8,4-4v-44.2c0-2.2-1.8-4-4-4h-28.7c-2.2,0-4,1.8-4,4v44.2
+			C668.6,599.7,670.4,601.5,672.6,601.5z"/>
+		<line class="st32" x1="672.4" y1="571.5" x2="701.5" y2="571.5"/>
+		<line class="st32" x1="672.4" y1="577.5" x2="697" y2="577.5"/>
+		<line class="st32" x1="672.4" y1="582.5" x2="701.5" y2="582.5"/>
+		<line class="st32" x1="672.4" y1="588.5" x2="689.7" y2="588.5"/>
+		<line class="st32" x1="672.4" y1="594.5" x2="686.9" y2="594.5"/>
+		
+			<text transform="matrix(1.0818 0 0 1 672.3035 564.7633)" class="st23" style="font-family:'MuseoSans-900'; font-size:14.193px;">DJE</text>
+		<path class="st23" d="M700.9,594.5l0.1-0.6l-0.1,0.2c-0.6,0.8-1.2,1.4-2,1.7c0,0,0,0,0.1-0.1c0.4-0.2,0.7-0.4,1-0.7
+			c0.1-0.1,0.1-0.1,0.1-0.2c0-0.1,0-0.1-0.1-0.1l-0.3-0.3c0,0,0,0,0,0c0,0,0,0,0,0l0-0.4c0.1,0,0.1,0,0.1-0.1c0,0,0,0,0.1-0.1
+			c0,0,0.1,0,0.1-0.1c0.1,0,0.1,0,0.1-0.1c0,0,0,0,0-0.1c0,0,0.1-0.1,0.2-0.1c0.1,0,0.1,0,0.1-0.1l0,0l-0.2-0.5
+			c0-0.1,0.1-0.1,0.1-0.2c0,0,0.1-0.1,0.1-0.1c0,0,0,0-0.1,0c0,0,0,0-0.1,0c0,0,0,0,0,0l0.5-0.3l-0.3-0.4c0-0.1,0-0.1,0-0.2
+			c0-0.1,0-0.1,0-0.1c0,0,0,0,0-0.1l0.3-0.4l-0.5-0.4l0.1-0.1c0,0,0,0,0-0.1c0,0,0,0,0,0l-0.1,0l0.2-0.6l-0.7-0.2l0-0.7l-0.7,0
+			c0,0,0-0.1-0.1-0.1l-0.2-0.6l-0.7,0.2l-0.4-0.6l-0.5,0.4l0-0.1c0,0,0,0-0.1,0c0,0,0,0-0.1,0l0,0.1l-0.5-0.4l-0.4,0.6l-0.7-0.2
+			L695,589l-0.7,0l0,0.7l-0.7,0.2l0.2,0.6l-0.1,0c0,0,0,0,0,0c0,0,0,0,0,0.1l0.1,0.1l-0.5,0.4l0.4,0.5c0,0-0.1,0-0.1,0c0,0,0,0,0,0
+			c0,0,0,0,0,0c0,0,0,0,0,0.1l-0.3,0.5l0.5,0.4c0,0,0,0,0,0.1l0,0c0,0,0,0.1,0,0.1l-0.2,0.5l0.3,0.1c0.1,0.1,0.2,0.2,0.4,0.2l0,0.6
+			c0,0,0,0,0,0l-0.3,0.3c0,0-0.1,0.1-0.1,0.1c0,0.1,0,0.1,0.1,0.2c0.3,0.3,0.7,0.5,1,0.7c0,0,0,0,0.1,0.1c-0.8-0.3-1.5-0.9-2-1.7
+			l-0.1-0.2l0.1,0.6l-0.6-0.3l0.1,0.1c0.8,1.3,1.9,2,3.4,2.3l0,0l0,0c0.1,0,0.2-0.1,0.2-0.2l0.1-0.4c0.1,0,0.3,0,0.4,0
+			c0,0.1,0,0.2,0,0.3c0,0-0.1,0.1-0.1,0.1c0,0.1,0,0.1,0.1,0.1c0,0,0,0,0,0c0,0.1,0.1,0.2,0.2,0.2c0.1,0,0.2-0.1,0.2-0.2
+			c0,0,0,0,0,0c0,0,0.1-0.1,0.1-0.1c0,0,0-0.1-0.1-0.1c0-0.1,0-0.2,0-0.3c0.1,0,0.3,0,0.4,0l0.1,0.4c0,0.1,0.1,0.2,0.2,0.2l0,0l0,0
+			c1.5-0.3,2.6-1,3.4-2.3l0.1-0.1L700.9,594.5z"/>
+	</g>
+</g>
+<g>
+	<circle class="st33" cx="998.9" cy="573.4" r="48.5"/>
+	<path class="st30" d="M1041.7,596.4c-10.8,25.6-42.8,25.5-42.8,25.5l-14.3-20l-9.5-50.2l34.9-7.1
+		C1010,544.6,1029,575.3,1041.7,596.4z"/>
+	<g>
+		<path class="st32" d="M1012.9,556.3l-1.6-8.1c-0.4-2.2-2.5-3.6-4.7-3.1l-28.2,5.6c-2.2,0.4-3.6,2.5-3.1,4.7l8.6,43.4
+			c0.4,2.2,2.5,3.6,4.7,3.1l28.2-5.6c2.2-0.4,3.6-2.5,3.1-4.7l-2.1-10.4"/>
+		<line class="st32" x1="981.5" y1="569.4" x2="1010" y2="563.8"/>
+		<line class="st32" x1="982.6" y1="575.3" x2="1006.8" y2="570.5"/>
+		<line class="st34" x1="991" y1="558" x2="1008.4" y2="554.5"/>
+		<line class="st32" x1="983.6" y1="580.2" x2="1005.7" y2="575.8"/>
+		<line class="st32" x1="984.8" y1="586.1" x2="1001.8" y2="582.7"/>
+		<g>
+			<polygon class="st23" points="1014.3,584.9 1010.2,588.9 1008.7,583.3 1015.9,557.5 1021.6,559.1 			"/>
+			<path class="st23" d="M1020.9,557.4l-3.6-1c-0.5-0.1-0.8-0.7-0.7-1.2l0.5-1.8c0.1-0.5,0.7-0.8,1.2-0.7l3.6,1
+				c0.5,0.1,0.8,0.7,0.7,1.2l-0.5,1.8C1022,557.3,1021.4,557.6,1020.9,557.4z"/>
+		</g>
+		<path class="st23" d="M1004.8,590.9c0.3-0.3,0.3-0.7,0.5-1c0.4-0.8,1.1-0.9,1.8-0.4c0.2,0.2,0.4,0.4,0.7,0.6
+			c0.3,0.2,0.6,0.4,1,0.4c0.4,0,0.7,0.2,0.7,0.6c0,0.4-0.3,0.6-0.7,0.7c-0.7,0.1-1.4-0.2-1.9-0.7c-0.4-0.3-0.6-0.4-0.7,0.2
+			c0,0.1-0.1,0.2-0.2,0.3c-0.6,1-1.5,1.1-2.2,0.1c-0.3-0.4-0.5-0.8-0.8-1.4c-0.1,0.4-0.2,0.7-0.3,1c-0.3,0.8-0.7,1.4-1.5,1.7
+			c-0.4,0.1-0.8,0.1-1-0.4c-0.1-0.4,0.1-0.7,0.5-0.8c0.4-0.1,0.6-0.4,0.7-0.8c0.2-0.5,0.3-1.1,0.3-1.6c0-0.3,0.1-0.5,0.2-0.8
+			c0.1-0.3,0.3-0.6,0.7-0.6c0.4-0.1,0.7,0.1,0.9,0.3c0.4,0.5,0.7,1.2,1,1.8C1004.5,590.4,1004.6,590.6,1004.8,590.9z"/>
+		<path class="st23" d="M986.2,559.5c0.4-0.6,0.5-1.4,0.4-2.2c-0.3-1.5-1.9-2.5-3.4-2.2s-2.5,1.9-2.2,3.4c0.2,0.8,0.6,1.4,1.2,1.8
+			l-0.8,3.3l2.2,0.6l1.1-2.9l2,2.2l1.7-1.5L986.2,559.5z"/>
+		<line class="st32" x1="986.1" y1="591.7" x2="996.6" y2="589.6"/>
+	</g>
+</g>
+<g>
+	<circle class="st35" cx="1303.3" cy="573.1" r="48.5"/>
+	<path class="st36" d="M1347,594c-11.1,27.6-44.6,27.9-44.6,27.9l-22.8-31.2v-33.5h39.8C1319.4,557.3,1340.9,586.2,1347,594z"/>
+	<g>
+		<path class="st32" d="M1299,574l-19.4,14.8c0,1.1,0.9,1.9,1.9,1.9h44.6c1.1,0,1.9-0.9,1.9-1.9l-18.6-14.8"/>
+		<path class="st32" d="M1317.5,557.3h-36c-1.1,0-1.9,0.9-1.9,1.9l24.8,18.9l15.2-12.1"/>
+		<path class="st32" d="M1328.1,548.6c-4.8,0-8.7,3.9-8.7,8.7c0,2.3,0.9,4.4,2.4,5.9l-0.2,2.3l2.8-0.4c1.1,0.6,2.4,0.9,3.8,0.9
+			c4.8,0,8.7-3.9,8.7-8.7C1336.8,552.5,1332.9,548.6,1328.1,548.6z"/>
+		<path class="st32" d="M1317.4,557.3h-36c-1.1,0-1.9,0.9-1.9,1.9v29.6c0,1.1,0.9,1.9,1.9,1.9h44.6c1.1,0,1.9-0.9,1.9-1.9v-20.4"/>
+		<path class="st23" d="M1326,555c-0.1-0.9-0.1-0.9,0.6-1.1c0.5-0.1,1-0.2,1.5-0.3c0.4-0.1,0.6,0.1,0.6,0.5c0,1.7,0,3.5,0,5.2
+			c0,0.5,0.2,0.6,0.6,0.6c0.3,0,0.6,0,0.8,0.2c0.3,0.3,0,0.8-0.5,0.8c-1.1,0-2.2,0-3.2,0c-0.3,0-0.5,0-0.5-0.4c0-0.3,0-0.5,0.5-0.6
+			c1-0.1,1-0.1,1-1.1c0-1.1,0-2.3,0-3.4c0-0.5-0.1-0.7-0.6-0.5C1326.6,554.9,1326.3,554.9,1326,555z"/>
+	</g>
+</g>
+<g>
+	<g>
+		<circle class="st37" cx="1020.4" cy="296.5" r="62.8"/>
+		<g>
+			
+				<text transform="matrix(0.9998 0 0 1 1095.1466 279.3856)" style="fill:#444543; font-family:'MuseoSans-500'; font-size:20.7631px;">Central do Processo Eletrônico</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 1097.1554 306.5438)"><tspan x="0" y="0" style="fill:#606060; font-family:'Verdana'; font-size:15px;">Visualize, peticione e acompanhe </tspan><tspan x="0" y="18" style="fill:#606060; font-family:'Verdana'; font-size:15px;">os processos de seu interesse</tspan></text>
+		</g>
+	</g>
+	<g>
+		<path class="st38" d="M1077.1,323.5c-18.4,34.5-52.5,35.8-52.5,35.8l-21.4-29.8l-12.6-16.3l-0.3-37.1l4.2-3.1h52l4.4,4.4
+			C1050.9,277.4,1067.3,304.7,1077.1,323.5z"/>
+	</g>
+	<g>
+		<path class="st39" d="M1037.8,323.6h-4.4c-0.8-0.9-2.7-3.6-2.7-7.5c-7.1,0-14.4,0-19.4,0c0.3,2.9-2.1,6.4-3,7.5h-4.3
+			c-0.8,0-1.4,0.6-1.4,1.4v0.6c0,0.8,0.6,1.4,1.4,1.4h33.8c0.8,0,1.4-0.6,1.4-1.4v-0.6C1039.2,324.2,1038.6,323.6,1037.8,323.6z"/>
+		<g>
+			
+				<text transform="matrix(1.0826 0 0 1 999.6153 299.046)" class="st23" style="font-family:'MuseoSans-900'; font-size:19.8512px;">CPE</text>
+		</g>
+		<path class="st23" d="M990.1,309.4l1.1,5.1h58.2l1.1-5.1H990.1z M1021.4,313.9c-0.9,0-1.7-0.8-1.7-1.7s0.8-1.7,1.7-1.7
+			c0.9,0,1.7,0.8,1.7,1.7S1022.3,313.9,1021.4,313.9z"/>
+		<path class="st32" d="M1046.7,314.9h-52.4c-2.2,0-4-1.8-4-4v-34c0-2.2,1.8-4,4-4h52.4c2.2,0,4,1.8,4,4v34
+			C1050.7,313.2,1048.9,314.9,1046.7,314.9z"/>
+	</g>
+</g>
+<rect x="1808.8" y="316.3" class="st6" width="1211.1" height="250"/>
+<rect x="1505.2" y="316.3" class="st7" width="303.6" height="28.5"/>
+<g>
+	<text transform="matrix(1 0 0 1 1571.2924 295.7561)" class="st25" style="font-family:'FiraSans-Bold'; font-size:16px;">PROCESSOS</text>
+</g>
+<line class="st8" x1="1808.8" y1="243.3" x2="1808.8" y2="1087.3"/>
+<text transform="matrix(1 0 0 1 1881.3883 291.5801)" class="st25" style="font-family:'MuseoSans-500'; font-size:34.4245px;">Processos</text>
+<text transform="matrix(1 0 0 1 1570.7228 238.8186)" style="fill:#AFAFAF; font-family:'MuseoSans-300'; font-size:14px;">Você está em: Início | Processos | Consulta Processual</text>
+<rect x="1569.7" y="299.4" class="st5" width="284.8" height="281.7"/>
+<g>
+	<path class="st9" d="M2402.9,480.7h-514.7c-4.7,0-8.5-4.2-8.5-9.4v-43.3c0-5.2,3.8-9.4,8.5-9.4h514.7c4.7,0,8.5,4.2,8.5,9.4v43.3
+		C2411.4,476.6,2407.6,480.7,2402.9,480.7z"/>
+	<text transform="matrix(1 0 0 1 1881.3883 390.3728)" class="st10" style="font-family:'MuseoSans-500'; font-size:28.3432px;">Consulta Processual</text>
+	<path class="st2" d="M2477.6,478.6h-41.5c-5.2,0-9.4-4.2-9.4-9.4v-41.5c0-5.2,4.2-9.4,9.4-9.4h41.5c5.2,0,9.4,4.2,9.4,9.4v41.5
+		C2486.9,474.5,2482.8,478.6,2477.6,478.6z"/>
+	<g>
+		<text transform="matrix(1 0 0 1 1903.3756 510.1882)" class="st10" style="font-family:'Verdana'; font-size:17.5421px;">Pesquisa avançada</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 1903.3756 458.7312)" style="fill:#A0A0A0; font-family:'MuseoSans-300'; font-size:21.0506px;">Digite o número do Processo</text>
+	</g>
+	<path class="st10" d="M2441.9,445.7c0-6.1,4.5-11.3,10.6-12.2c6.8-0.9,13.1,3.9,13.9,10.7c0.3,2.6-0.2,5.1-1.5,7.5
+		c-0.2,0.4-0.2,0.5,0.1,0.8c3.3,3.3,6.6,6.6,9.9,9.9c1.2,1.2,1.2,2.1,0.1,3.4c-0.4,0.5-0.9,1-1.5,1.3c-0.8,0.5-1.5,0.5-2.2-0.1
+		c-0.3-0.2-0.5-0.4-0.7-0.7c-3.2-3.2-6.5-6.5-9.7-9.7c-0.3-0.3-0.5-0.4-1-0.2c-4.2,2-8.4,2.1-12.3-0.3c-3.5-2.2-5.4-5.5-5.7-9.7
+		C2441.9,446.2,2441.9,446,2441.9,445.7z M2454.1,453.7c4.5,0,8.1-3.6,8.1-8.1c0-4.5-3.6-8.1-8-8.1c-4.5,0-8.1,3.6-8.1,8
+		C2446.1,450.1,2449.6,453.7,2454.1,453.7z"/>
+</g>
+<rect x="2102.9" y="595.1" class="st5" width="50.2" height="1.2"/>
+<g>
+	<rect x="1807" y="566.3" class="st11" width="302.2" height="243.2"/>
+	<rect x="2109.2" y="566.3" class="st12" width="302.2" height="243.2"/>
+	<rect x="2411.4" y="566.3" class="st13" width="302.2" height="243.2"/>
+	<rect x="2713.6" y="566.3" class="st7" width="302.2" height="243.2"/>
+	<text transform="matrix(0.9998 0 0 1 1854.5997 624.6685)" style="enable-background:new    ;"><tspan x="0" y="0" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Guia de Recolhimento</tspan><tspan x="57.4" y="23" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">da União </tspan></text>
+	<g>
+		<text transform="matrix(0.9998 0 0 1 2183.9019 624.6685)"><tspan x="0" y="0" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Diário da Justiça</tspan><tspan x="27.9" y="23.1" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Eletrônico</tspan></text>
+	</g>
+	<g>
+		
+			<text transform="matrix(0.9998 0 0 1 2470.9092 635.9604)" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Geração de Certidão</text>
+	</g>
+	<g>
+		<g>
+			<text transform="matrix(0.9998 0 0 1 2805.6777 624.6685)"><tspan x="0" y="0" style="fill:#444543; font-family:'MuseoSans-500'; font-size:19.2329px;">Sistema Push</tspan><tspan x="-21.2" y="19.2" style="fill:#444543; font-family:'MuseoSans-500'; font-size:16px;">Atualização por email</tspan></text>
+		</g>
+	</g>
+</g>
+<g>
+	<rect x="2411.4" y="812.4" class="st6" width="603.2" height="297.7"/>
+	<g>
+		<text transform="matrix(1 0 0 1 2513.2217 993.2693)" class="st10" style="font-family:'Verdana'; font-size:15.1839px;">(61) 3319-8410</text>
+		<text transform="matrix(1 0 0 1 2636.9619 993.2693)" class="st25" style="font-family:'Verdana'; font-size:15.1839px;"> </text>
+		<text transform="matrix(1 0 0 1 2644.2773 993.2693)" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">(segunda a sexta-feira, das 9h às 19h)</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 2519.2959 1027.5486)" class="st10" style="font-family:'Verdana'; font-size:17.5421px;">informa.processual@stj.jus.br</text>
+	</g>
+	<text transform="matrix(1.1193 0 0 1 2489.96 1028.5681)" class="st10" style="font-family:'Verdana-Bold'; font-size:22.0833px;">@</text>
+	<g>
+		<text transform="matrix(1 0 0 1 2472.5283 886.4612)" class="st10" style="font-family:'MuseoSans-500'; font-size:25.3463px;">Atendimento Judicial</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 2472.5283 954.7117)" class="st10" style="font-family:'Verdana'; font-size:17.5421px;">Tire aqui</text>
+		<text transform="matrix(1 0 0 1 2548.6426 954.7117)" class="st25" style="font-family:'Verdana'; font-size:15.1839px;"> todas as dúvidas sobre processos no STJ</text>
+	</g>
+	<g>
+		<g>
+			<path class="st10" d="M2493.4,978.9c4.9-1.8,6.2-1.2,6,2.7c0,0.8,0.1,1.7-0.8,2c-3.7,1.3-2.1,4.1-1.4,6.3
+				c0.7,2.1,1.3,4.9,4.6,3.6c2-0.8,2.2,1.6,3.1,2.7c0.7,0.8,0.5,1.8-0.2,2.6c-1.2,1.3-2.8,1.4-4.1,0.6c-5-2.8-6.8-7.7-7.7-13.3
+				c-0.2-1.5,0.7-3.2-0.8-4.5C2492.7,980.6,2493.1,979.7,2493.4,978.9z"/>
+		</g>
+	</g>
+</g>
+<g>
+	<rect x="1808.8" y="811.9" class="st14" width="602.5" height="297.7"/>
+	<text transform="matrix(1 0 0 1 1877.5275 885.8298)" class="st10" style="font-family:'MuseoSans-500'; font-size:25.3463px;">Perguntas Frequentes</text>
+	<g>
+		<rect x="1919.5" y="918.9" class="st5" width="366" height="146.1"/>
+		<text transform="matrix(1 0 0 1 1919.5148 930.4392)"><tspan x="0" y="0" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">BacenJud</tspan><tspan x="0" y="29.4" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Certidões</tspan><tspan x="0" y="58.7" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Consulta Processual</tspan><tspan x="0" y="88.1" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Peticionamento/Central do Processo Eletrônico</tspan><tspan x="0" y="117.4" class="st25" style="font-family:'Verdana'; font-size:15.1839px;">Sistema PUSH</tspan></text>
+	</g>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1899.731 961.3015)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1899.731 932.3015)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1899.731 990.6569)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1899.731 1020.0124)">
+	</image>
+	
+		<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1899.731 1048.3556)">
+	</image>
+</g>
+<rect x="1505.2" y="134.1" class="st40" width="1511" height="70"/>
+<g>
+	<g>
+		<g>
+			<path class="st15" d="M1587,172.9c0,8.2-3.8,15.4-9.7,20.2h-0.4c-3.4,0-6.2-2.8-6.2-6.2v-37.8h0.6
+				C1580.5,153.1,1587,162.2,1587,172.9L1587,172.9z"/>
+		</g>
+		<g>
+			<path class="st16" d="M1581,149.1c5,5.3,8,12.5,8,20.3c0,9.6-4.5,18.1-11.5,23.6c5.8-4.7,9.6-12,9.6-20.1
+				c0-10.7-6.5-19.9-15.7-23.8L1581,149.1L1581,149.1z"/>
+		</g>
+		<g>
+			<path class="st17" d="M1605.3,175.4c1.3-3.4,2-7.1,2-10.9c0-5.6-1.5-10.8-4-15.3h5.3c3.4,0,6.2,2.8,6.2,6.2v36.9L1605.3,175.4z"
+				/>
+		</g>
+		<g>
+			<path class="st18" d="M1604.7,176.9c-3.2,7.3-9,13.1-16.3,16.3h25.4L1604.7,176.9z"/>
+		</g>
+		<g>
+			<path class="st19" d="M1605.3,175.4c1.3-3.4,2-7.1,2-10.9c0-5.6-1.5-10.8-4-15.3h-12.7L1605.3,175.4z"/>
+		</g>
+		<g>
+			<path class="st20" d="M1589.2,149.1h-6.5c4.7,5.5,7.6,12.6,7.6,20.3c0,9.5-4.2,17.9-10.9,23.7h9.1c7.3-3.1,13.1-9,16.3-16.3
+				L1589.2,149.1z"/>
+		</g>
+	</g>
+	<g>
+		<g>
+			<path class="st17" d="M1687.6,154.9h-14.4v4.9h8.5v15.6c0,5.3-1.7,6.7-5,6.7h-7.1v5.2h7.4c6.3,0,10.6-2.9,10.6-11.7V154.9z"/>
+		</g>
+		<g>
+			<polygon class="st17" points="1659.9,159.8 1669.6,159.8 1669.6,154.9 1644.4,154.9 1644.4,159.8 1654.1,159.8 1654.1,187.3 
+				1659.9,187.3 			"/>
+		</g>
+		<g>
+			<path class="st17" d="M1632.4,163c0-1.6,0.9-3.2,4.4-3.2c3,0,4,0,4,0v-4.9h-3.9c-6.7,0-10.5,3.4-10.5,8.6c0,4.6,3.4,7.4,8.7,9.3
+				c4.1,1.5,5.7,2.9,5.7,5.3c0,2.4-1.8,3.9-5.2,3.9h-9.2v5.2h8.2c8.2,0,12.1-4.4,12.1-9.6c0-4.6-2.7-7.4-8.2-9.5
+				C1634.3,166.6,1632.4,165.5,1632.4,163L1632.4,163z"/>
+		</g>
+	</g>
+</g>
+<rect x="1505.2" y="104.1" class="st21" width="1511.1" height="29"/>
+<rect x="1846.2" y="104.1" class="st22" width="29" height="29"/>
+<text transform="matrix(1 0 0 1 2190.3264 124.179)" style="fill:#07B6D3; font-family:'MyriadPro-Regular'; font-size:15.754px;">SobMedida</text>
+<text transform="matrix(1 0 0 1 2268.1465 124.179)" style="fill:#3BC3F2; font-family:'MyriadPro-Regular'; font-size:15.754px;">:</text>
+<text transform="matrix(1 0 0 1 2271.7266 124.179)" style="fill:#BFD5DD; font-family:'MyriadPro-Regular'; font-size:15.754px;">  </text>
+<text transform="matrix(1 0 0 1 2279.0366 124.179)" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">Advogado |  Servidor  |  Tribunais  </text>
+<text transform="matrix(1 0 0 1 2779.8838 124.0811)" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">Ouvidoria  |  Acesso Rápido</text>
+<text transform="matrix(1 0 0 1 1745.9567 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Institucional</text>
+<text transform="matrix(1 0 0 1 2033.5005 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Jurisprudência</text>
+<text transform="matrix(1 0 0 1 2197.6311 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Repetitivos</text>
+<text transform="matrix(1 0 0 1 2333.179 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Comunicação</text>
+<text transform="matrix(1 0 0 1 2478.0728 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Transparência</text>
+<text transform="matrix(1 0 0 1 2630.4202 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Leis e Normas</text>
+<text transform="matrix(1 0 0 1 2779.9585 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Contato</text>
+<rect x="2516" y="161.1" class="st5" width="0" height="3.8"/>
+<g>
+	<rect x="1881.2" y="149.1" class="st23" width="133" height="56"/>
+</g>
+<text transform="matrix(1 0 0 1 1905.9692 178.9253)" class="st25" style="font-family:'MuseoSans-500'; font-size:17px;">Processos</text>
+<text transform="matrix(1 0 0 1 1745.9567 123.1792)" style="enable-background:new    ;"><tspan x="0" y="0" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">Acessibilidade:   </tspan><tspan x="107.3" y="0" class="st23" style="font-family:'MyriadPro-Regular'; font-size:15.754px;">A- </tspan><tspan x="125.2" y="0" style="fill:#98AAAF; font-family:'MyriadPro-Regular'; font-size:15.754px;">   A+    AA    </tspan></text>
+<g>
+	<rect x="1505.2" y="1126.1" class="st24" width="1512" height="40"/>
+	<g>
+		<text transform="matrix(1 0 0 1 1609.8925 1151.9458)" class="st10" style="font-family:'Verdana'; font-size:15px;">Como chegar</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 1939.8931 1153.9458)" class="st25" style="font-family:'Verdana'; font-size:15px;">SAFS - Quadra 06 - Lote 01 - Trecho III - CEP: 70095-900 - Brasília - DF         +66 61 3319-8000</text>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 2910.8943 1151.9458)" class="st25" style="font-family:'Verdana'; font-size:15px;">Avalie</text>
+	</g>
+	<g>
+		<path class="st10" d="M1588.6,1132.4c1,0,2.1,0,3.1,0c0,0.2,0.2,0.2,0.3,0.2c0.3,0.1,0.7,0.1,1,0.2c4.5,1.4,7.1,6.1,6,10.4
+			c-0.2,0.9-0.4,1.7-1,2.4c-0.3,0.1-0.4,0.4-0.3,0.6l0,0c-0.3,0.1-0.3,0.3-0.3,0.5c-0.1,0.2-0.3,0.4-0.4,0.7c0,0-0.1,0.1-0.1,0.1
+			l0,0c0,0.1-0.1,0.1-0.1,0.2l0,0c-0.3,0.1-0.4,0.4-0.4,0.7l0,0c-0.2,0-0.2,0.2-0.2,0.3l0,0c-0.3,0.2-0.4,0.4-0.4,0.7v0
+			c-0.1,0-0.1,0.1-0.1,0.2v0h0c-0.2,0.1-0.2,0.2-0.2,0.4l0,0l0,0c0,0,0,0.1-0.1,0.1l0,0c-0.3,0.1-0.4,0.3-0.4,0.6
+			c-0.5,1-1.1,2-1.7,3c-0.3,0.2-0.4,0.5-0.5,0.8c-0.5,1-1,1.9-1.6,2.9c-0.3,0.5-0.6,1-0.8,1.6c-0.1,0-0.1,0-0.2,0
+			c0-0.2-0.1-0.3-0.2-0.4c-1.2-2.1-2.4-4.2-3.6-6.3c-1.2-2-2.3-4.1-3.5-6.1c-3.3-5.2-0.7-11.9,5.3-13.5
+			C1588.3,1132.6,1588.5,1132.6,1588.6,1132.4z M1584.8,1141.3c-0.1,2.9,2.5,5.5,5.5,5.5c3,0,5.6-2.7,5.6-5.5c0-3-2.4-5.5-5.4-5.6
+			C1587.4,1135.6,1584.7,1138.2,1584.8,1141.3z"/>
+		<path class="st10" d="M1584.8,1141.3c-0.1-3.2,2.6-5.7,5.6-5.6c3,0.1,5.4,2.6,5.4,5.6c0,2.9-2.6,5.5-5.6,5.5
+			C1587.3,1146.8,1584.7,1144.2,1584.8,1141.3z M1590.3,1138c-1.9,0-3.3,1.5-3.3,3.4c0,1.9,1.7,3.3,3.4,3.3c1.8-0.1,3.3-1.5,3.3-3.4
+			C1593.6,1139.4,1592.1,1137.9,1590.3,1138z"/>
+	</g>
+	<g>
+		<g>
+			<path class="st25" d="M2516.4,1137.3c4.8-1.7,6.1-1.1,5.9,2.5c0,0.8,0.1,1.6-0.8,1.9c-3.6,1.2-2.1,3.8-1.3,5.8
+				c0.7,1.9,1.3,4.5,4.6,3.3c2-0.7,2.2,1.5,3.1,2.5c0.7,0.8,0.5,1.7-0.2,2.4c-1.2,1.2-2.7,1.3-4.1,0.6c-4.9-2.6-6.7-7.1-7.6-12.3
+				c-0.2-1.4,0.7-3-0.8-4.2C2515.7,1138.9,2516,1138.1,2516.4,1137.3z"/>
+		</g>
+	</g>
+</g>
+<path class="st10" d="M2918.1,167c0-5.2,3.9-9.7,9.1-10.4c5.8-0.8,11.2,3.3,11.9,9.2c0.3,2.3-0.2,4.4-1.3,6.4
+	c-0.2,0.3-0.2,0.5,0.1,0.7c2.8,2.8,5.7,5.6,8.5,8.5c1,1,1.1,1.8,0.1,2.9c-0.4,0.4-0.8,0.8-1.2,1.1c-0.7,0.4-1.3,0.4-1.9-0.1
+	c-0.2-0.2-0.4-0.4-0.6-0.6c-2.8-2.8-5.5-5.5-8.3-8.3c-0.3-0.3-0.4-0.3-0.8-0.1c-3.6,1.7-7.2,1.8-10.6-0.3c-3-1.8-4.6-4.7-4.9-8.3
+	C2918.2,167.5,2918.2,167.3,2918.1,167z M2928.6,173.9c3.8,0,6.9-3.1,6.9-6.9c0-3.8-3.1-6.9-6.9-6.9c-3.8,0-6.9,3.1-6.9,6.9
+	C2921.7,170.8,2924.8,173.9,2928.6,173.9z"/>
+<image style="overflow:visible;" width="478" height="477" xlink:href="C:\Users\Thais Lucas\Pictures\temp\component-ac.png"  transform="matrix(9.077100e-02 0 0 9.077100e-02 2971.2214 203.5802)">
+</image>
+<g>
+	<text transform="matrix(1 0 0 1 2692.8667 284.7959)"><tspan x="0" y="0" style="fill:#606060; font-family:'Verdana'; font-size:15px;">Sistema indisponível? </tspan><tspan x="168.2" y="0" class="st10" style="font-family:'Verdana'; font-size:15px;">Clique aqui</tspan></text>
+</g>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(1.0123 0 0 1.0123 1551.3226 321.8621)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1549.792 436.3857)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1549.792 472.3857)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1549.792 508.3857)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1549.792 544.3857)">
+</image>
+<image style="overflow:visible;" width="11" height="16" xlink:href="../../temp/seta.png"  transform="matrix(0 -1.0123 1.0123 0 1549.792 581.3857)">
+</image>
+<g>
+	<path class="st26" d="M2677,269.1c6.3,0,11.5,5.2,11.5,11.6c0,6.3-5.2,11.5-11.6,11.4c-6.3,0-11.4-5.2-11.4-11.5
+		C2665.5,274.2,2670.7,269.1,2677,269.1z M2683.8,276.1c-0.1,0.1-0.2,0.2-0.3,0.2c-3.6,3.6-7.2,7.2-10.8,10.8
+		c-0.1,0.1-0.1,0.1-0.2,0.2c-0.1,0.1-0.1,0.2,0,0.3c1.2,0.8,2.6,1.1,4,1.3c0.7,0.1,1.5-0.1,2.2-0.3
+		C2684.5,287.2,2686.9,280.7,2683.8,276.1z M2670.1,285c0.1-0.1,0.1-0.1,0.2-0.1c3.6-3.6,7.3-7.3,10.9-10.9c0.3-0.3,0.2-0.4-0.1-0.5
+		c-1.9-1.1-3.9-1.4-6-0.9C2669.4,274,2667.1,280.5,2670.1,285z"/>
+</g>
+<text transform="matrix(1 0 0 1 1569.7133 335.0222)" style="enable-background:new    ;"><tspan x="0" y="0" class="st25" style="font-family:'Verdana'; font-size:14px;">Consulta Processual</tspan><tspan x="0" y="36" class="st25" style="font-family:'Verdana'; font-size:14px;">   </tspan><tspan x="14.8" y="36" class="st10" style="font-family:'Verdana'; font-size:13px;">Acesso ao sistema</tspan><tspan x="0" y="65" class="st10" style="font-family:'Verdana'; font-size:13px;">   Como utilizar a ferramenta</tspan><tspan x="0" y="101" class="st25" style="font-family:'Verdana'; font-size:14px;">Peticionamento</tspan><tspan x="0" y="137" class="st25" style="font-family:'Verdana'; font-size:14px;">Despesas Processuais</tspan><tspan x="0" y="173" class="st25" style="font-family:'Verdana'; font-size:14px;">Diário da Justiça Eletrônico</tspan><tspan x="0" y="209" class="st25" style="font-family:'Verdana'; font-size:14px;">Sessões de Julgamento</tspan><tspan x="0" y="245" class="st25" style="font-family:'Verdana'; font-size:14px;">Outros Serviços</tspan></text>
+<g>
+	<path class="st27" d="M2500.9,276c-0.5,1.4-1,2.7-1.5,4.2c-1-1.2-1.9-2.3-2.9-3.4c0.4-0.1,0.7-0.2,1-0.2c0.3,0,0.4-0.1,0.2-0.4
+		c-0.9-1.9-2.2-3.3-4.1-4.3c-6.1-3.4-13.7,0.8-14.1,7.8c-0.3,5.9,4.6,10.7,10.5,10.1c2.4-0.2,4.5-1.3,6.1-3.1c0.2-0.2,0.3-0.2,0.5,0
+		c0.2,0.2,0.4,0.4,0.6,0.5c0.2,0.2,0.3,0.3,0.1,0.5c-3.2,3.3-7,4.5-11.4,3.2c-4.4-1.3-7.1-4.5-7.8-9.1c-0.7-4.6,1.7-9.1,5.9-11.3
+		c4-2.1,9.1-1.4,12.5,1.6c1.2,1.1,2.2,2.4,2.8,3.9c0.1,0.3,0.2,0.4,0.5,0.3c0.3-0.1,0.6-0.1,0.9-0.2
+		C2500.8,276,2500.9,276,2500.9,276z"/>
+	<path class="st28" d="M2489.9,276.8c0,0.6,0,1.3,0,1.9c0,0.2,0,0.4,0.2,0.5c0.1,0.1,0.3,0.2,0.3,0.4c0.1,0.4,0.4,0.5,0.8,0.5
+		c1.6,0.4,3.1,0.8,4.7,1.2c0.2,0.1,0.3,0.1,0.2,0.4c-0.1,0.4-0.1,0.9-0.3,1.1c-0.3,0.2-0.7-0.1-1.1-0.2c-1.3-0.3-2.7-0.7-4-1
+		c-0.2-0.1-0.4,0-0.6,0.1c-0.7,0.5-1.6,0.3-2.1-0.3c-0.5-0.6-0.4-1.6,0.2-2.1c0.2-0.2,0.2-0.3,0.2-0.5c0-1.3,0-2.6,0-3.8
+		c0-0.3,0.1-0.4,0.4-0.4c0.3,0,0.6,0,0.9,0c0.2,0,0.3,0.1,0.3,0.3C2489.9,275.5,2489.9,276.1,2489.9,276.8z"/>
+</g>
+<g>
+	<text transform="matrix(1 0 0 1 2507.9844 285.7563)" style="fill:#606060; font-family:'Verdana'; font-size:15px;">Plantão Judiciário</text>
+</g>
+<g>
+	<circle class="st29" cx="1954" cy="720.4" r="50.7"/>
+	<path class="st30" d="M1978,704.8c0,0,10.2,16.1,22.3,35.4c-15.8,32.9-45.7,30.5-45.7,30.5l-23.2-28.5c-1.1-2.5,0-13.3,0-29.9
+		c0.6-1,2.5-4.2,5.9-7C1952.4,705.2,1956.3,704.9,1978,704.8z"/>
+	<g>
+		<g>
+			<path class="st23" d="M1970.9,739.2c-0.5,0-0.9,0-1.4,0c0-5.3,0-10.6,0-16c0.5,0,0.9,0,1.4,0C1971,723.4,1971,738.8,1970.9,739.2
+				z"/>
+			<path class="st23" d="M1977,739.2c-0.5,0-1.1,0-1.6,0c0-5.3,0-10.6,0-16c0.5,0,1.1,0,1.6,0C1977,723.4,1977.1,738.9,1977,739.2z"
+				/>
+			<path class="st23" d="M1960.5,723.3c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.5,0-1.1,0-1.6,0
+				C1960.5,733.9,1960.5,728.6,1960.5,723.3z"/>
+			<path class="st23" d="M1952.4,723.3c0.5,0,1.1,0,1.6,0c0,0.2,0.1,15.7,0,16c-0.5,0-1.1,0-1.6,0
+				C1952.4,739.1,1952.4,723.6,1952.4,723.3z"/>
+			<path class="st23" d="M1932.6,723.3c0.5,0,1.1,0,1.6,0c0,0.2,0.1,15.7,0,16c-0.5,0-1.1,0-1.6,0
+				C1932.6,739.1,1932.6,723.5,1932.6,723.3z"/>
+			<path class="st23" d="M1934.9,723.3c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.1,0-1.3,0.1-1.6,0
+				C1934.9,733.9,1934.9,728.6,1934.9,723.3z"/>
+			<path class="st23" d="M1950.1,723.3c0.4,0,0.8,0,1.3,0c0,5.3,0,10.6,0,16c-0.1,0-1,0.1-1.3,0
+				C1950.1,733.9,1950.1,728.6,1950.1,723.3z"/>
+			<path class="st23" d="M1974.5,739.2c-0.2,0-0.5,0-0.7,0c0-5.3,0-10.6,0-16c0.2,0,0.5,0,0.7,0
+				C1974.5,728.6,1974.5,733.9,1974.5,739.2z"/>
+			<path class="st23" d="M1966.3,723.3c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.5,0-1.1,0-1.6,0
+				C1966.3,733.9,1966.3,728.6,1966.3,723.3z"/>
+			<path class="st23" d="M1947.9,723.3c0.5,0,1.1,0,1.6,0c0,5.3,0,10.6,0,16c-0.5,0-1.1,0-1.6,0
+				C1947.9,733.9,1947.9,728.6,1947.9,723.3z"/>
+			<path class="st23" d="M1943,723.3c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0C1943,733.9,1943,728.6,1943,723.3z"/>
+			<path class="st23" d="M1971.9,723.3c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0
+				C1971.8,739.1,1971.8,723.6,1971.9,723.3z"/>
+			<path class="st23" d="M1946.6,723.3c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0
+				C1946.6,733.9,1946.6,728.6,1946.6,723.3z"/>
+			<path class="st23" d="M1940.1,739.2c-0.2,0-0.4,0-0.6,0c0-5.3,0-10.6,0-16c0.2,0,0.4,0,0.6,0
+				C1940.1,723.4,1940.1,738.9,1940.1,739.2z"/>
+			<path class="st23" d="M1957.6,739.2c-0.2,0-0.4,0-0.6,0c0-0.2-0.1-15.6,0-16c0.2,0,0.4,0,0.6,0
+				C1957.6,723.4,1957.6,738.9,1957.6,739.2z"/>
+			<path class="st23" d="M1964.1,723.3c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0
+				C1964.1,733.9,1964.1,728.6,1964.1,723.3z"/>
+			<path class="st23" d="M1962.8,723.3c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0
+				C1962.8,733.9,1962.8,728.6,1962.8,723.3z"/>
+			<path class="st23" d="M1958.3,723.3c0.2,0,0.4,0,0.6,0c0,0.2,0.1,15.7,0,16c-0.2,0-0.4,0-0.6,0
+				C1958.2,739.1,1958.2,723.6,1958.3,723.3z"/>
+			<path class="st23" d="M1955.3,739.2c-0.2,0-0.4,0-0.6,0c0-0.2-0.1-15.6,0-16c0.2,0,0.4,0,0.6,0
+				C1955.3,723.4,1955.3,738.9,1955.3,739.2z"/>
+			<path class="st23" d="M1940.8,723.3c0.2,0,0.4,0,0.6,0c0,0.2,0.1,15.6,0,16c-0.2,0-0.4,0-0.6,0
+				C1940.7,739.1,1940.7,723.6,1940.8,723.3z"/>
+			<path class="st23" d="M1931,739.2c-0.2,0-0.4,0-0.6,0c0-5.3,0-10.6,0-16c0.2,0,0.4,0,0.6,0C1931,728.6,1931,733.9,1931,739.2z"/>
+			<path class="st23" d="M1937.2,723.3c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0
+				C1937.2,733.9,1937.2,728.6,1937.2,723.3z"/>
+			<path class="st23" d="M1944.3,723.3c0.2,0,0.4,0,0.6,0c0,5.3,0,10.6,0,16c-0.2,0-0.4,0-0.6,0
+				C1944.3,733.9,1944.3,728.6,1944.3,723.3z"/>
+		</g>
+		
+			<text transform="matrix(1.0818 0 0 1 1929.3405 716.9433)" class="st23" style="font-family:'MuseoSans-900'; font-size:21.0049px;">GRU</text>
+	</g>
+</g>
+<g>
+	<circle class="st31" cx="2257.7" cy="722.5" r="48.5"/>
+	<path class="st30" d="M2276.1,699.4c0,0,13.1,21.9,25.7,43c-10.6,28.4-44.2,28.4-44.2,28.4l-18.9-22.3l1.5-49.9L2276.1,699.4z"/>
+	<g>
+		<path class="st32" d="M2243.3,750.6h28.7c2.2,0,4-1.8,4-4v-44.2c0-2.2-1.8-4-4-4h-28.7c-2.2,0-4,1.8-4,4v44.2
+			C2239.3,748.8,2241.1,750.6,2243.3,750.6z"/>
+		<line class="st32" x1="2243.1" y1="720.6" x2="2272.2" y2="720.6"/>
+		<line class="st32" x1="2243.1" y1="726.6" x2="2267.7" y2="726.6"/>
+		<line class="st32" x1="2243.1" y1="731.6" x2="2272.2" y2="731.6"/>
+		<line class="st32" x1="2243.1" y1="737.6" x2="2260.5" y2="737.6"/>
+		<line class="st32" x1="2243.1" y1="743.6" x2="2257.6" y2="743.6"/>
+		
+			<text transform="matrix(1.0818 0 0 1 2243.0269 713.8696)" class="st23" style="font-family:'MuseoSans-900'; font-size:14.193px;">DJE</text>
+		<path class="st23" d="M2271.6,743.6l0.1-0.6l-0.1,0.2c-0.6,0.8-1.2,1.4-2,1.7c0,0,0,0,0.1-0.1c0.4-0.2,0.7-0.4,1-0.7
+			c0.1-0.1,0.1-0.1,0.1-0.2c0-0.1,0-0.1-0.1-0.1l-0.3-0.3c0,0,0,0,0,0c0,0,0,0,0,0l0-0.4c0.1,0,0.1,0,0.1-0.1c0,0,0,0,0.1-0.1
+			c0,0,0.1,0,0.1-0.1c0.1,0,0.1,0,0.1-0.1c0,0,0,0,0-0.1c0,0,0.1-0.1,0.2-0.1c0.1,0,0.1,0,0.1-0.1l0,0l-0.2-0.5
+			c0-0.1,0.1-0.1,0.1-0.2c0,0,0.1-0.1,0.1-0.1c0,0,0,0-0.1,0c0,0,0,0-0.1,0c0,0,0,0,0,0l0.5-0.3l-0.3-0.4c0-0.1,0-0.1,0-0.2
+			c0-0.1,0-0.1,0-0.1c0,0,0,0,0-0.1l0.3-0.4l-0.5-0.4l0.1-0.1c0,0,0,0,0-0.1c0,0,0,0,0,0l-0.1,0l0.2-0.6l-0.7-0.2l0-0.7l-0.7,0
+			c0,0,0-0.1-0.1-0.1l-0.2-0.6l-0.7,0.2l-0.4-0.6l-0.5,0.4l0-0.1c0,0,0,0-0.1,0c0,0,0,0-0.1,0l0,0.1l-0.5-0.4l-0.4,0.6l-0.7-0.2
+			l-0.2,0.7l-0.7,0l0,0.7l-0.7,0.2l0.2,0.6l-0.1,0c0,0,0,0,0,0c0,0,0,0,0,0.1l0.1,0.1l-0.5,0.4l0.4,0.5c0,0-0.1,0-0.1,0c0,0,0,0,0,0
+			c0,0,0,0,0,0c0,0,0,0,0,0.1l-0.3,0.5l0.5,0.4c0,0,0,0,0,0.1l0,0c0,0,0,0.1,0,0.1l-0.2,0.5l0.3,0.1c0.1,0.1,0.2,0.2,0.4,0.2l0,0.6
+			c0,0,0,0,0,0l-0.3,0.3c0,0-0.1,0.1-0.1,0.1c0,0.1,0,0.1,0.1,0.2c0.3,0.3,0.7,0.5,1,0.7c0,0,0,0,0.1,0.1c-0.8-0.3-1.5-0.9-2-1.7
+			l-0.1-0.2l0.1,0.6l-0.6-0.3l0.1,0.1c0.8,1.3,1.9,2,3.4,2.3l0,0l0,0c0.1,0,0.2-0.1,0.2-0.2l0.1-0.4c0.1,0,0.3,0,0.4,0
+			c0,0.1,0,0.2,0,0.3c0,0-0.1,0.1-0.1,0.1c0,0.1,0,0.1,0.1,0.1c0,0,0,0,0,0c0,0.1,0.1,0.2,0.2,0.2c0.1,0,0.2-0.1,0.2-0.2
+			c0,0,0,0,0,0c0,0,0.1-0.1,0.1-0.1c0,0,0-0.1-0.1-0.1c0-0.1,0-0.2,0-0.3c0.1,0,0.3,0,0.4,0l0.1,0.4c0,0.1,0.1,0.2,0.2,0.2l0,0l0,0
+			c1.5-0.3,2.6-1,3.4-2.3l0.1-0.1L2271.6,743.6z"/>
+	</g>
+</g>
+<g>
+	<circle class="st33" cx="2569.6" cy="722.5" r="48.5"/>
+	<path class="st30" d="M2612.4,745.6c-10.8,25.6-42.8,25.5-42.8,25.5l-14.3-20l-9.5-50.2l34.9-7.1
+		C2580.7,693.7,2599.8,724.4,2612.4,745.6z"/>
+	<g>
+		<path class="st32" d="M2583.6,705.4l-1.6-8.1c-0.4-2.2-2.5-3.6-4.7-3.1l-28.2,5.6c-2.2,0.4-3.6,2.5-3.1,4.7l8.6,43.4
+			c0.4,2.2,2.5,3.6,4.7,3.1l28.2-5.6c2.2-0.4,3.6-2.5,3.1-4.7l-2.1-10.4"/>
+		<line class="st32" x1="2552.2" y1="718.6" x2="2580.7" y2="712.9"/>
+		<line class="st32" x1="2553.4" y1="724.4" x2="2577.5" y2="719.6"/>
+		<line class="st34" x1="2561.7" y1="707.1" x2="2579.1" y2="703.6"/>
+		<line class="st32" x1="2554.3" y1="729.3" x2="2576.5" y2="725"/>
+		<line class="st32" x1="2555.5" y1="735.2" x2="2572.5" y2="731.8"/>
+		<g>
+			<polygon class="st23" points="2585.1,734 2580.9,738 2579.5,732.4 2586.7,706.6 2592.3,708.2 			"/>
+			<path class="st23" d="M2591.6,706.5l-3.6-1c-0.5-0.1-0.8-0.7-0.7-1.2l0.5-1.8c0.1-0.5,0.7-0.8,1.2-0.7l3.6,1
+				c0.5,0.1,0.8,0.7,0.7,1.2l-0.5,1.8C2592.7,706.4,2592.2,706.7,2591.6,706.5z"/>
+		</g>
+		<path class="st23" d="M2575.5,740c0.3-0.3,0.3-0.7,0.5-1c0.4-0.8,1.1-0.9,1.8-0.4c0.2,0.2,0.4,0.4,0.7,0.6c0.3,0.2,0.6,0.4,1,0.4
+			c0.4,0,0.7,0.2,0.7,0.6c0,0.4-0.3,0.6-0.7,0.7c-0.7,0.1-1.4-0.2-1.9-0.7c-0.4-0.3-0.6-0.4-0.7,0.2c0,0.1-0.1,0.2-0.2,0.3
+			c-0.6,1-1.5,1.1-2.2,0.1c-0.3-0.4-0.5-0.8-0.8-1.4c-0.1,0.4-0.2,0.7-0.3,1c-0.3,0.8-0.7,1.4-1.5,1.7c-0.4,0.1-0.8,0.1-1-0.4
+			c-0.1-0.4,0.1-0.7,0.5-0.8c0.4-0.1,0.6-0.4,0.7-0.8c0.2-0.5,0.3-1.1,0.3-1.6c0-0.3,0.1-0.5,0.2-0.8c0.1-0.3,0.3-0.6,0.7-0.6
+			c0.4-0.1,0.7,0.1,0.9,0.3c0.4,0.5,0.7,1.2,1,1.8C2575.2,739.5,2575.3,739.7,2575.5,740z"/>
+		<path class="st23" d="M2556.9,708.7c0.4-0.6,0.5-1.4,0.4-2.2c-0.3-1.5-1.9-2.5-3.4-2.2s-2.5,1.9-2.2,3.4c0.2,0.8,0.6,1.4,1.2,1.8
+			l-0.8,3.3l2.2,0.6l1.1-2.9l2,2.2l1.7-1.5L2556.9,708.7z"/>
+		<line class="st32" x1="2556.9" y1="740.8" x2="2567.3" y2="738.7"/>
+	</g>
+</g>
+<g>
+	<circle class="st35" cx="2874" cy="722.2" r="48.5"/>
+	<path class="st36" d="M2917.7,743.1c-11.1,27.6-44.6,27.9-44.6,27.9l-22.8-31.2v-33.5h39.8C2890.1,706.4,2911.6,735.3,2917.7,743.1
+		z"/>
+	<g>
+		<path class="st32" d="M2869.7,723.1l-19.4,14.8c0,1.1,0.9,1.9,1.9,1.9h44.6c1.1,0,1.9-0.9,1.9-1.9l-18.6-14.8"/>
+		<path class="st32" d="M2888.2,706.4h-36c-1.1,0-1.9,0.9-1.9,1.9l24.8,18.9l15.2-12.1"/>
+		<path class="st32" d="M2898.8,697.7c-4.8,0-8.7,3.9-8.7,8.7c0,2.3,0.9,4.4,2.4,5.9l-0.2,2.3l2.8-0.4c1.1,0.6,2.4,0.9,3.8,0.9
+			c4.8,0,8.7-3.9,8.7-8.7C2907.5,701.6,2903.6,697.7,2898.8,697.7z"/>
+		<path class="st32" d="M2888.2,706.4h-36c-1.1,0-1.9,0.9-1.9,1.9v29.6c0,1.1,0.9,1.9,1.9,1.9h44.6c1.1,0,1.9-0.9,1.9-1.9v-20.4"/>
+		<path class="st23" d="M2896.7,704.1c-0.1-0.9-0.1-0.9,0.6-1.1c0.5-0.1,1-0.2,1.5-0.3c0.4-0.1,0.6,0.1,0.6,0.5c0,1.7,0,3.5,0,5.2
+			c0,0.5,0.2,0.6,0.6,0.6c0.3,0,0.6,0,0.8,0.2c0.3,0.3,0,0.8-0.5,0.8c-1.1,0-2.2,0-3.2,0c-0.3,0-0.5,0-0.5-0.4c0-0.3,0-0.5,0.5-0.6
+			c1-0.1,1-0.1,1-1.1c0-1.1,0-2.3,0-3.4c0-0.5-0.1-0.7-0.6-0.5C2897.3,704,2897,704,2896.7,704.1z"/>
+	</g>
+</g>
+<g>
+	<g>
+		<circle class="st37" cx="2591.1" cy="445.6" r="62.8"/>
+		<g>
+			
+				<text transform="matrix(0.9998 0 0 1 2665.8699 428.4919)" style="fill:#444543; font-family:'MuseoSans-500'; font-size:20.7631px;">Central do Processo Eletrônico</text>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 2667.8787 455.6501)"><tspan x="0" y="0" style="fill:#606060; font-family:'Verdana'; font-size:15px;">Visualize, peticione e acompanhe </tspan><tspan x="0" y="18" style="fill:#606060; font-family:'Verdana'; font-size:15px;">os processos de seu interesse</tspan></text>
+		</g>
+	</g>
+	<g>
+		<path class="st38" d="M2647.9,472.6c-18.4,34.5-52.5,35.8-52.5,35.8l-21.4-29.8l-12.6-16.3l-0.3-37.1l4.2-3.1h52l4.4,4.4
+			C2621.7,426.5,2638.1,453.8,2647.9,472.6z"/>
+	</g>
+	<g>
+		<path class="st39" d="M2608.5,472.7h-4.4c-0.8-0.9-2.7-3.6-2.7-7.5c-7.1,0-14.4,0-19.4,0c0.3,2.9-2.1,6.4-3,7.5h-4.3
+			c-0.8,0-1.4,0.6-1.4,1.4v0.6c0,0.8,0.6,1.4,1.4,1.4h33.8c0.8,0,1.4-0.6,1.4-1.4V474C2609.9,473.3,2609.3,472.7,2608.5,472.7z"/>
+		<g>
+			
+				<text transform="matrix(1.0826 0 0 1 2570.3386 448.1523)" class="st23" style="font-family:'MuseoSans-900'; font-size:19.8512px;">CPE</text>
+		</g>
+		<path class="st23" d="M2560.8,458.5l1.1,5.1h58.2l1.1-5.1H2560.8z M2592.1,463c-0.9,0-1.7-0.8-1.7-1.7s0.8-1.7,1.7-1.7
+			c0.9,0,1.7,0.8,1.7,1.7S2593.1,463,2592.1,463z"/>
+		<path class="st32" d="M2617.4,464.1h-52.4c-2.2,0-4-1.8-4-4v-34c0-2.2,1.8-4,4-4h52.4c2.2,0,4,1.8,4,4v34
+			C2621.4,462.3,2619.6,464.1,2617.4,464.1z"/>
+	</g>
+</g>
+</svg>
