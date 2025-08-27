@@ -1,0 +1,8 @@
+Copyright (c) 2025 Superior Tribunal de Justiça (STJ)
+
+Este projeto é licenciado sob a licença MIT (consulte o arquivo LICENSE).
+
+Marcas, logotipos e brasões do STJ não integram a licença de software e
+permanecem restritos ao uso institucional.
+
+Componentes de terceiros mantêm suas próprias licenças e avisos.

@@ -1,15 +1,25 @@
 # app.py
 
-import streamlit as st
-import pandas as pd
-import pickle
-import uuid
+import os
 import re
+import uuid
+import pickle
+import subprocess
+from pathlib import Path
+
+import pandas as pd
+import streamlit as st
+
 from logica import calcular_preco_mercado
-from relatorios import gerar_relatorio_padrao, gerar_relatorio_prorrogacao, gerar_relatorio_mapa
+from relatorios import (
+    gerar_relatorio_padrao,
+    gerar_relatorio_prorrogacao,
+    gerar_relatorio_mapa,
+)
 from gerador_pdf import criar_pdf_completo
 
-# ------------------ Config ------------------
+# ============================== Configuração base ==============================
+
 st.set_page_config(
     page_title="Avaliação de Pesquisa de Mercado",
     layout="wide",
@@ -19,40 +29,58 @@ st.set_page_config(
 st.logo("assets/logo_stj.png", link="https://www.stj.jus.br", size="large")
 
 
-# ------------------ Estado ------------------
+# ============================== Estado (session_state) ==============================
+
+# Página atual do mini-router
 if "pagina_atual" not in st.session_state:
     st.session_state.pagina_atual = "inicio"
+
+# Modo de análise selecionado na Home
 if "tipo_analise" not in st.session_state:
     st.session_state.tipo_analise = None
+
+# Itens do relatório consolidado (cada entrada é um dict com campos do item)
 if "itens_analisados" not in st.session_state:
     st.session_state.itens_analisados = []
+
+# Contador do "Item X" da tela de análise unitária
 if "item_atual" not in st.session_state:
     st.session_state.item_atual = 1
+
+# Índice do item sendo editado na análise unitária (ou None)
 if "edit_item_index" not in st.session_state:
     st.session_state.edit_item_index = None
-    
-# --- NOVO: bases normalizadas para o fluxo por fonte ---
-if "itens" not in st.session_state:       # [{id, descricao, unidade, quantidade}]
+
+# Bases normalizadas para o fluxo “por fonte”
+# itens:     [{id, descricao, unidade, quantidade, valor_unit_contratado?}]
+# fontes:    [{id, nome, tipo}]
+# propostas: [{item_id, fonte_id, preco, sei}]
+if "itens" not in st.session_state:
     st.session_state.itens = []
-if "fontes" not in st.session_state:      # [{id, nome, tipo}]
+if "fontes" not in st.session_state:
     st.session_state.fontes = []
-if "propostas" not in st.session_state:   # [{item_id, fonte_id, preco, sei}]
+if "propostas" not in st.session_state:
     st.session_state.propostas = []
 
 
-# ------------------ Helpers ------------------
-def formatar_moeda(v):
+# ============================== Helpers / Utilidades ==============================
+
+def formatar_moeda(v) -> str:
+    """Formata número como moeda BR."""
     return f"R$ {float(v):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-def formatar_moeda_html(v):
+def formatar_moeda_html(v) -> str:
+    """Formata moeda com 'R$' seguro para HTML."""
     return formatar_moeda(v).replace("R$", "R&#36;&nbsp;")
 
 _TAGS_RE = re.compile("<.*?>")
+
 def strip_html(s: str) -> str:
+    """Remove tags simples de HTML (uso em observações geradas)."""
     return _TAGS_RE.sub("", s or "")
 
 def _todos_consolidados() -> bool:
-    """Retorna True se TODOS os itens cadastrados (aba 1) já estiverem no relatório consolidado."""
+    """True se TODOS os itens cadastrados (aba 1) já estiverem no relatório consolidado."""
     itens = st.session_state.get("itens", [])
     consol = st.session_state.get("itens_analisados", [])
 
@@ -67,64 +95,204 @@ def _todos_consolidados() -> bool:
 
     # 2) Fallback: comparar (descricao, unidade, quantidade)
     trip_itens = {
-        (str(i.get("descricao","")).strip(), str(i.get("unidade","")).strip(), int(i.get("quantidade", 0)))
+        (str(i.get("descricao", "")).strip(), str(i.get("unidade", "")).strip(), int(i.get("quantidade", 0)))
         for i in itens
     }
     trip_consol = {
-        (str(r.get("descricao","")).strip(), str(r.get("unidade","")).strip(), int(r.get("quantidade", 0)))
+        (str(r.get("descricao", "")).strip(), str(r.get("unidade", "")).strip(), int(r.get("quantidade", 0)))
         for r in consol
     }
     return trip_itens.issubset(trip_consol) and len(trip_consol) >= len(trip_itens)
 
+
+# ---------------- Navegação via querystring (API nova: st.query_params) ----------------
+
+def _sync_page_from_query():
+    """Sincroniza st.session_state.pagina_atual a partir de ?page=..."""
+    page = st.query_params.get("page")  # retorna str ou None
+    valid = {"inicio", "analise", "lancamento", "relatorios", "guia"}
+    if page in valid and st.session_state.get("pagina_atual") != page:
+        st.session_state.pagina_atual = page
+
+def _goto(page: str):
+    """Atualiza o router e a URL (?page=...)."""
+    st.query_params["page"] = page
+    st.session_state.pagina_atual = page
+
+
 def carregar_estilo():
+    """Injeta o style.css, se existir."""
     try:
         with open("style.css", "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
         pass  # estilo é opcional
 
-def novo_id(prefixo="id"):
+
+def nav_lateral():
+    """Menu lateral compacto, com 'links' + ícone e destaque do selecionado."""
+    itens = [
+        ("inicio",      "Início",            ":material/home:"),
+        ("analise",     "Análise de Item",   ":material/analytics:"),
+        ("lancamento",  "Lançar por Fonte",  ":material/library_add:"),
+        ("relatorios",  "Relatórios",        ":material/receipt_long:"),
+        ("guia",        "Guia",              ":material/menu_book:"),
+    ]
+    atual = st.session_state.get("pagina_atual", "inicio")
+
+    with st.sidebar:
+        # Estilização leve do menu
+        st.markdown(
+            """
+            <style>
+            [data-testid="stSidebar"] .stButton > button {
+                width: 100%;
+                text-align: left;
+                border-radius: 10px;
+                padding: 10px 12px;
+            }
+            [data-testid="stSidebar"] .stButton > button:hover {
+                background: #f1f5f9 !important;
+            }
+            .st-nav-title { 
+                font-weight: 600; 
+                margin: 6px 0 8px 2px; 
+                color: #111827;
+                font-size: 0.95rem;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown('<div class="st-nav-title">Navegação</div>', unsafe_allow_html=True)
+
+        for key, label, ic in itens:
+            ativo = (key == atual)
+            st.button(
+                label,
+                key=f"nav_{key}",
+                icon=ic,                              # ícone Material (não é emoji)
+                type="primary" if ativo else "secondary",
+                use_container_width=True,
+                on_click=lambda p=key: _goto(p),      # muda a página + querystring
+            )
+        st.divider()
+        st.caption(f"Avaliação de Pesquisa de Mercado — v{get_app_version()}")
+
+
+def breadcrumb_topo():
+    """Mostra um 'você está em…' discreto no topo da página (sem emoji)."""
+    nomes = {
+        "inicio": "Início",
+        "analise": "Análise de Item",
+        "lancamento": "Lançar por Fonte",
+        "relatorios": "Relatórios",
+        "guia": "Guia",
+    }
+    atual = nomes.get(st.session_state.get("pagina_atual", "inicio"), "Início")
+    st.markdown(
+        f"<div style='color:#6b7280;font-size:0.9rem;margin-top:4px;margin-bottom:8px'>"
+        f"<strong>{atual}</strong></div>",
+        unsafe_allow_html=True,
+    )
+
+
+def novo_id(prefixo="id") -> str:
+    """Gera um id curto e legível para itens/fontes."""
     return f"{prefixo}_{uuid.uuid4().hex[:8]}"
 
+# URLs (com fallback sensato)
+REPO_URL = os.environ.get("APP_REPO_URL", "https://github.com/morenoss/pesquisademercado")
+APP_URL  = os.environ.get("APP_URL",  "https://pesquisamercadostj.streamlit.app/")  # corrigido o typo
 def rodape_stj():
     st.markdown(
-        """
+        f"""
         <div class="stj-footer">
           Projeto desenvolvido pela <strong>Secretaria de Administração (STJ)</strong>.
-          Contato:
-          <a href="mailto:stj.sad@stj.jus.br">stj.sad@stj.jus.br</a> •
-          <a href="mailto:morenos@stj.jus.br">morenos@stj.jus.br</a>
+          Contato: <a href="mailto:stj.sad@stj.jus.br">stj.sad@stj.jus.br</a> •
+          <a href="mailto:morenos@stj.jus.br">morenos@stj.jus.br</a><br/>
+          <small>
+            Código licenciado sob
+            <a href="{REPO_URL}/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>.
+            Marcas e brasões: uso institucional.
+          </small>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-# Callbacks
-def acao_editar(index): st.session_state.edit_item_index = index; st.session_state.analise_resultados = None
-def acao_excluir(index):
+@st.cache_data(show_spinner=False)
+def get_app_version() -> str:
+    """
+    Resolve a versão da aplicação (em ordem de preferência):
+      1) APP_VERSION (variável de ambiente) ou STREAMLIT_APP_VERSION
+      2) arquivo VERSION (raiz do projeto)
+      3) git describe --tags (se repositório presente)
+      4) fallback '0.0.0-dev'
+    """
+    # 1) var de ambiente (ex.: APP_VERSION=1.4.2)
+    v = os.environ.get("APP_VERSION") or os.environ.get("STREAMLIT_APP_VERSION")
+    if v:
+        return v.strip()
+
+    # 2) arquivo VERSION (contendo algo como: 1.4.2)
+    vf = Path("VERSION")
+    if vf.exists():
+        try:
+            return vf.read_text(encoding="utf-8").strip()
+        except Exception:
+            pass
+
+    # 3) tag do git (em dev)
+    try:
+        out = subprocess.run(
+            ["git", "describe", "--tags", "--always", "--dirty"],
+            capture_output=True, text=True, check=True
+        ).stdout.strip()
+        if out:
+            return out
+    except Exception:
+        pass
+
+    # 4) fallback
+    return "0.0.0-dev"
+
+
+# ============================== Callbacks (botões de linha) ==============================
+
+def acao_editar(index: int):
+    st.session_state.edit_item_index = index
+    st.session_state.analise_resultados = None
+
+def acao_excluir(index: int):
     if index < len(st.session_state.itens_analisados):
         st.session_state.itens_analisados.pop(index)
         if st.session_state.edit_item_index == index:
             st.session_state.edit_item_index = None
-def acao_mover(index, direcao):
+
+def acao_mover(index: int, direcao: int):
     novo_index = index + direcao
     if 0 <= novo_index < len(st.session_state.itens_analisados):
         item = st.session_state.itens_analisados.pop(index)
         st.session_state.itens_analisados.insert(novo_index, item)
-def acao_duplicar(index):
+
+def acao_duplicar(index: int):
     if 0 <= index < len(st.session_state.itens_analisados):
         item = st.session_state.itens_analisados[index].copy()
         item["item_num"] = len(st.session_state.itens_analisados) + 1
         st.session_state.itens_analisados.append(item)
 
-def ir_para_inicio(): st.session_state.pagina_atual = "inicio"
-def ir_para_analise(): st.session_state.pagina_atual = "analise"
-def ir_para_lancamento(): st.session_state.pagina_atual = "lancamento"
-def ir_para_relatorios(): st.session_state.pagina_atual = "relatorios"
+def ir_para_inicio(): _goto("inicio")
+def ir_para_analise(): _goto("analise")
+def ir_para_lancamento(): _goto("lancamento")
+def ir_para_relatorios(): _goto("relatorios")
 
-# ------------------ Páginas ------------------
+
+# ============================== Páginas ==============================
 
 def pagina_inicial():
+    """Página inicial com a seleção do tipo de análise e carregamento de PKL."""
     st.title("Bem-vindo à Ferramenta de Avaliação de Pesquisa de Mercado")
     st.markdown(
         "Esta aplicação foi desenvolvida para **automatizar os cálculos e validações da pesquisa de mercado**, "
@@ -264,12 +432,14 @@ def pagina_inicial():
 
 
 def pagina_analise():
+    """Fluxo de análise de um único item."""
     if not st.session_state.tipo_analise:
         st.warning("Por favor, selecione um tipo de análise na página inicial para começar.")
-        if st.button("Ir para a Página Inicial"): st.session_state.pagina_atual = "inicio"
+        if st.button("Ir para a Página Inicial"):
+            st.session_state.pagina_atual = "inicio"
         return
 
-    # sempre que não estiver editando, garanta que o contador = último + 1
+    # Quando NÃO estiver editando, garanta que o contador = último + 1
     if st.session_state.edit_item_index is None:
         st.session_state.item_atual = len(st.session_state.itens_analisados) + 1
 
@@ -285,21 +455,39 @@ def pagina_analise():
     st.markdown("---")
 
     header_text = f"Análise do Item {dados_atuais.get('item_num', st.session_state.item_atual)}"
-    if modo_edicao: header_text += " (Modo de Edição)"
+    if modo_edicao:
+        header_text += " (Modo de Edição)"
     st.header(header_text)
 
+    # ------------------------ Formulário do item ------------------------
     with st.container(border=True):
         st.subheader("Informações Iniciais do Item")
-        item_descricao = st.text_area("Item Pesquisado (Descrição completa)", height=100, value=dados_atuais.get("descricao", ""))
+        item_descricao = st.text_area(
+            "Item Pesquisado (Descrição completa)",
+            height=100,
+            value=dados_atuais.get("descricao", ""),
+        )
         cols = st.columns(3)
-        item_quantidade = cols[0].number_input("Quantidade", min_value=1, step=1, value=dados_atuais.get("quantidade", 1))
-        item_unidade = cols[1].text_input("Unidade de Medida", placeholder="Ex: Unidade, Caixa", value=dados_atuais.get("unidade", ""))
+        item_quantidade = cols[0].number_input(
+            "Quantidade", min_value=1, step=1, value=dados_atuais.get("quantidade", 1)
+        )
+        item_unidade = cols[1].text_input(
+            "Unidade de Medida", placeholder="Ex: Unidade, Caixa", value=dados_atuais.get("unidade", "")
+        )
         if st.session_state.tipo_analise == "Prorrogação":
-            item_valor_contratado = cols[2].number_input("Valor Unitário Contratado", min_value=0.01, format="%.2f", value=dados_atuais.get("valor_unit_contratado", 0.01))
+            item_valor_contratado = cols[2].number_input(
+                "Valor Unitário Contratado", min_value=0.01, format="%.2f",
+                value=dados_atuais.get("valor_unit_contratado", 0.01)
+            )
 
+    # ------------------------ Tabela de preços ------------------------
     with st.container(border=True):
         st.subheader("Dados da Pesquisa de Preços")
-        tipos_de_fonte_opcoes = ["Fornecedor", "Contrato", "Banco de Preços/Comprasnet", "Ata de Registro de Preços", "Pesquisa da Internet", "Mídia Especializada", "Outros"]
+        tipos_de_fonte_opcoes = [
+            "Fornecedor", "Contrato", "Banco de Preços/Comprasnet",
+            "Ata de Registro de Preços", "Pesquisa da Internet",
+            "Mídia Especializada", "Outros"
+        ]
         df_precos_inicial = pd.DataFrame(
             dados_atuais.get(
                 "df_original",
@@ -320,6 +508,7 @@ def pagina_analise():
             key=f"editor_{st.session_state.edit_item_index}",
         )
 
+    # ------------------------ Critérios & análise ------------------------
     with st.container(border=True):
         st.subheader("Critérios e Resultados")
         with st.expander("Configurar Critérios de Análise"):
@@ -327,7 +516,6 @@ def pagina_analise():
             limiar_inexequivel = st.slider("Percentual Mínimo para Preço Inexequível (%)", 0, 100, 75)
             usar_preco_minimo = st.checkbox("Utilizar PREÇO MÍNIMO como resultado final?")
 
-        # Botões lado a lado: Analisar / Cancelar (quando editando)
         c_analisar, c_cancelar_top = st.columns(2)
         clicou_analisar = c_analisar.button("Analisar Preços", type="primary")
         if modo_edicao:
@@ -336,26 +524,41 @@ def pagina_analise():
                 st.session_state.analise_resultados = None
                 st.rerun()
         else:
-            c_cancelar_top.write("")  # placeholder
+            c_cancelar_top.write("")
 
         if clicou_analisar:
-            df_com_preco = df_editado.dropna(subset=["PREÇO"]).copy()
+            # ORDENAÇÃO: ordenar preços asc para calcular (NAs por último)
+            df_com_preco = (
+                df_editado
+                .dropna(subset=["PREÇO"])
+                .sort_values(by="PREÇO", ascending=True, na_position="last")
+                .reset_index(drop=True)
+                .copy()
+            )
             if not df_com_preco.empty:
-                st.session_state.analise_resultados = calcular_preco_mercado(df_com_preco, limiar_elevado, limiar_inexequivel)
+                st.session_state.analise_resultados = calcular_preco_mercado(
+                    df_com_preco, limiar_elevado, limiar_inexequivel
+                )
                 st.session_state.usar_preco_minimo = usar_preco_minimo
             else:
                 st.warning("Nenhum preço foi inserido para análise.")
 
+    # ------------------------ Exibição dos resultados ------------------------
     if "analise_resultados" in st.session_state and st.session_state.analise_resultados:
         resultados = st.session_state.analise_resultados
         usar_preco_minimo = st.session_state.get("usar_preco_minimo", False)
         st.markdown("---")
         st.subheader("Avaliação Detalhada dos Preços")
 
-        # Tabela (sem HTML nas observações)
+        # Tabela de preços avaliados (ordenada por PREÇO asc)
         df_avaliado = resultados.get("df_avaliado", pd.DataFrame())
         if not df_avaliado.empty:
-            df_show = df_avaliado.copy()
+            df_show = (
+                df_avaliado
+                .copy()
+                .sort_values(by="PREÇO", ascending=True, na_position="last")
+                .reset_index(drop=True)
+            )
             df_show["OBSERVAÇÃO"] = df_show["OBSERVAÇÃO_CALCULADA"].apply(strip_html)
             st.dataframe(
                 df_show[["EMPRESA/FONTE", "TIPO DE FONTE", "LOCALIZADOR SEI", "PREÇO", "AVALIAÇÃO", "OBSERVAÇÃO"]],
@@ -365,16 +568,14 @@ def pagina_analise():
 
             # Observações detalhadas (visual simples, cinza, sem fundo)
             obs_items = []
-            for _, r in df_avaliado.iterrows():
-                txt = strip_html(r.get("OBSERVAÇÃO_CALCULADA", ""))  # remove <p>, estilos, etc.
+            for _, r in df_show.iterrows():
+                txt = strip_html(r.get("OBSERVAÇÃO_CALCULADA", ""))
                 if txt.strip():
                     fonte = r.get("EMPRESA/FONTE", "—")
                     obs_items.append(f"<li><b>{fonte}</b>: {txt}</li>")
 
             if obs_items:
-                # espaço maior ANTES do bloco de observações, para não grudar na tabela
                 st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-
                 st.markdown(
                     "<div style='color:#6b7280;font-size:0.95rem;line-height:1.45;'>"
                     "<div style='font-weight:600;margin-bottom:6px;'>Observações detalhadas</div>"
@@ -383,8 +584,6 @@ def pagina_analise():
                     "</ul></div>",
                     unsafe_allow_html=True,
                 )
-
-                # espaço MAIOR DEPOIS das observações para afastar do bloco de métricas
                 st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
 
         problemas = resultados.get("problemas", [])
@@ -419,7 +618,7 @@ def pagina_analise():
 
             st.success(f"**PREÇO DE MERCADO UNITÁRIO: R$ {preco_mercado_final:.2f}**")
 
-            # --- Caixinhas azuis / comparações ---
+            # Caixas informativas
             st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
             # Mapa de Preços: destacar melhor preço
@@ -461,7 +660,7 @@ def pagina_analise():
                     unsafe_allow_html=True,
                 )
 
-            # ---- Ações (salvar/atualizar/cancelar) ----
+            # Ações (salvar/atualizar/cancelar)
             botao_desativado = necessita_justificativa and not justificativa_usuario.strip()
             label_botao = "Atualizar Item" if modo_edicao else "Adicionar Item ao Relatório"
 
@@ -477,6 +676,16 @@ def pagina_analise():
                 st.rerun()
 
             if clicou_salvar:
+                # ORDENAÇÃO: persistir df_original ordenado por PREÇO asc
+                try:
+                    df_salvar = (
+                        pd.DataFrame(df_editado)
+                        .sort_values(by="PREÇO", ascending=True, na_position="last")
+                        .reset_index(drop=True)
+                    )
+                except Exception:
+                    df_salvar = pd.DataFrame(df_editado)
+
                 registro = {
                     "item_num": dados_atuais.get("item_num", st.session_state.item_atual),
                     "descricao": item_descricao.strip(),
@@ -485,7 +694,7 @@ def pagina_analise():
                     "metodo_final": metodo_final,
                     "valor_unit_mercado": float(preco_mercado_final),
                     "valor_total_mercado": float(preco_mercado_final) * int(item_quantidade),
-                    "df_original": df_editado.to_dict("records"),
+                    "df_original": df_salvar.to_dict("records"),
                     "problemas": problemas,
                     "justificativa": justificativa_usuario.strip(),
                 }
@@ -548,6 +757,7 @@ def pagina_analise():
                 st.success("Item salvo no relatório.")
                 st.rerun()
 
+    # ------------------------ Lista de itens salvos ------------------------
     st.markdown("---")
     if st.session_state.itens_analisados:
         st.subheader("Itens Salvos no Relatório")
@@ -558,7 +768,10 @@ def pagina_analise():
                 cols = st.columns([0.6, 0.4])
                 with cols[0]:
                     st.markdown(f"**Item {item['item_num']}:** {item.get('descricao', 'N/A')}")
-                    st.markdown(f"<small>Valor Unitário (mercado): R$ {item.get('valor_unit_mercado', 0):.2f}</small>", unsafe_allow_html=True)
+                    st.markdown(
+                        f"<small>Valor Unitário (mercado): R$ {item.get('valor_unit_mercado', 0):.2f}</small>",
+                        unsafe_allow_html=True,
+                    )
                 with cols[1]:
                     btn_cols = st.columns([1, 1, 1, 0.5, 0.5])
                     btn_cols[0].button("✏️ Editar", key=f"edit_{i}", on_click=acao_editar, args=(i,), use_container_width=True)
@@ -567,6 +780,7 @@ def pagina_analise():
                     btn_cols[3].button("▲", key=f"up_{i}", on_click=acao_mover, args=(i, -1), disabled=(i==0), use_container_width=True)
                     btn_cols[4].button("▼", key=f"down_{i}", on_click=acao_mover, args=(i, 1), disabled=(i==len(st.session_state.itens_analisados)-1), use_container_width=True)
 
+    # ------------------------ Exportar + PDF ------------------------
     st.markdown("---")
     with st.container(border=True):
         st.subheader("Opções da Pesquisa Completa")
@@ -577,7 +791,7 @@ def pagina_analise():
                 "itens_analisados": st.session_state.itens_analisados,
                 "item_atual": st.session_state.item_atual,
                 "tipo_analise": st.session_state.tipo_analise,
-                # NOVO: persistir o fluxo por fonte
+                # Persistir o fluxo por fonte
                 "itens": st.session_state.itens,
                 "fontes": st.session_state.fontes,
                 "propostas": st.session_state.propostas,
@@ -598,7 +812,11 @@ def pagina_analise():
             elif not num_processo_pdf.strip():
                 st.warning("Informe o nº do processo.")
             else:
-                pdf_bytes = criar_pdf_completo(st.session_state.itens_analisados, num_processo_pdf, st.session_state.tipo_analise)
+                pdf_bytes = criar_pdf_completo(
+                    st.session_state.itens_analisados,
+                    num_processo_pdf,
+                    st.session_state.tipo_analise
+                )
                 st.download_button(
                     label="📄 Gerar PDF Completo",
                     data=pdf_bytes,
@@ -608,9 +826,14 @@ def pagina_analise():
                     type="primary",
                 )
 
+
 def pagina_relatorio():
+    """Visualização consolidada do relatório (somente leitura)."""
     st.title("Relatório Consolidado (Visualização)")
-    num_processo = st.text_input("Número do Processo (para visualização)", st.session_state.get("num_processo_pdf_final", ""))
+    num_processo = st.text_input(
+        "Número do Processo (para visualização)",
+        st.session_state.get("num_processo_pdf_final", "")
+    )
     if not num_processo:
         st.info("Informe um número de processo para visualizar os relatórios.")
         return
@@ -618,6 +841,7 @@ def pagina_relatorio():
         st.warning("Nenhum item foi analisado ainda.")
         return
     st.markdown("---")
+
     tipo_analise = st.session_state.get("tipo_analise", "N/A")
     if tipo_analise == "Pesquisa Padrão":
         gerar_relatorio_padrao(st.session_state.itens_analisados, num_processo)
@@ -628,7 +852,9 @@ def pagina_relatorio():
     else:
         st.warning("Tipo de análise não identificado.")
 
+
 def pagina_lancamento_por_fonte():
+    """Fluxo em lote: cadastrar itens/fontes, lançar preços e consolidar."""
     st.title("Lançamento em Lote (por Fonte)")
     tabs = st.tabs([
         "1) Itens",
@@ -658,9 +884,7 @@ def pagina_lancamento_por_fonte():
         )
         df_show = df_show[ordem]
 
-        column_cfg = {
-            "QUANTIDADE": st.column_config.NumberColumn(min_value=1, step=1),
-        }
+        column_cfg = {"QUANTIDADE": st.column_config.NumberColumn(min_value=1, step=1)}
         if "VALOR UNIT. CONTRATADO" in df_show.columns:
             column_cfg["VALOR UNIT. CONTRATADO"] = st.column_config.NumberColumn(format="R$ %.2f", min_value=0.0)
 
@@ -742,9 +966,7 @@ def pagina_lancamento_por_fonte():
             df_show,
             num_rows="dynamic",
             use_container_width=True,
-            column_config={
-                "TIPO DE FONTE": st.column_config.SelectboxColumn(options=tipos_de_fonte_opcoes),
-            },
+            column_config={"TIPO DE FONTE": st.column_config.SelectboxColumn(options=tipos_de_fonte_opcoes)},
             key="editor_fontes",
         )
 
@@ -867,10 +1089,9 @@ def pagina_lancamento_por_fonte():
         if st.button("Gerar PRÉVIA"):
             fontes_by_id = {f["id"]: f for f in st.session_state.fontes}
             buffer = []       # lista de entradas para confirmar depois
-            preview_rows = [] # para a tabela-resumo
 
             for it in st.session_state.itens:
-                # df de preços do item
+                # df de preços do item a partir das propostas
                 registros = []
                 for p in st.session_state.propostas:
                     if p["item_id"] != it["id"]:
@@ -886,8 +1107,10 @@ def pagina_lancamento_por_fonte():
                     })
                 df_precos = pd.DataFrame(registros)
 
+                # ignorar itens sem preço e ORDENAR por PREÇO asc (NAs ao final)
                 if df_precos.empty or df_precos["PREÇO"].dropna().empty:
                     continue
+                df_precos = df_precos.sort_values(by="PREÇO", ascending=True, na_position="last").reset_index(drop=True)
 
                 resultados = calcular_preco_mercado(df_precos, limiar_elevado, limiar_inexequivel)
 
@@ -914,9 +1137,10 @@ def pagina_lancamento_por_fonte():
                     "metodo_final": "PREÇO MÍNIMO" if usar_preco_minimo else metodo,
                     "valor_unit_mercado": float(preco_final),
                     "valor_total_mercado": float(preco_final) * int(it["quantidade"]),
+                    # ORDENAÇÃO: persistir df_original já ordenado
                     "df_original": df_precos.to_dict("records"),
                     "problemas": resultados.get("problemas", []),
-                    "justificativa": "",  # será preenchida se houver problemas
+                    "justificativa": "",
                 }
 
                 # MAPA DE PREÇOS
@@ -924,7 +1148,10 @@ def pagina_lancamento_por_fonte():
                     registro.update({
                         "valor_unit_melhor_preco": melhor_unit,
                         "valor_total_melhor_preco": melhor_unit * int(it["quantidade"]),
-                        "dados_melhor_proposta": f"FONTE: {melhor.get('EMPRESA/FONTE','—')} | LOCALIZADOR SEI: {melhor.get('LOCALIZADOR SEI','—')}",
+                        "dados_melhor_proposta": (
+                            f"FONTE: {melhor.get('EMPRESA/FONTE','—')} | "
+                            f"LOCALIZADOR SEI: {melhor.get('LOCALIZADOR SEI','—')}"
+                        ),
                     })
                 else:
                     registro.update({
@@ -934,9 +1161,6 @@ def pagina_lancamento_por_fonte():
                     })
 
                 # PRORROGAÇÃO
-                contr_unit = 0.0
-                contr_tot  = 0.0
-                avaliacao  = ""
                 if st.session_state.tipo_analise == "Prorrogação":
                     contr_unit = float(it.get("valor_unit_contratado", 0.0) or 0.0)
                     contr_tot  = contr_unit * int(it["quantidade"])
@@ -958,7 +1182,7 @@ def pagina_lancamento_por_fonte():
                         "avaliacao_preco_contratado": "",
                     })
 
-                # linha da prévia
+                # Linha da prévia (resumo)
                 linha_preview = {
                     "DESCRIÇÃO": it["descricao"],
                     "UNID.": it["unidade"],
@@ -1044,78 +1268,79 @@ def pagina_lancamento_por_fonte():
                     for b in buffer:
                         reg = dict(b["registro"])
                         reg["justificativa"] = (st.session_state.get(f"just_{b['item_uid']}", "") or "").strip()
-                        reg["orig_item_id"] = b["item_uid"] 
+                        reg["orig_item_id"] = b["item_uid"]
                         st.session_state.itens_analisados.append(reg)
-                        
+
                     # renumera item_num
                     for i, item in enumerate(st.session_state.itens_analisados):
                         item["item_num"] = i + 1
 
                     st.success(f"{len(buffer)} item(ns) consolidados no relatório.")
-                    # feedback: mostra a mesma tabela da prévia
                     st.dataframe(prev_df, use_container_width=True, hide_index=True, column_config=colcfg)
 
-                    # limpa prévia (mas não dá rerun para manter o feedback visível)
+                    # limpa prévia (sem rerun, para manter feedback visível)
                     del st.session_state["consol_buffer"]
 
             if c2.button("Descartar PRÉVIA"):
                 del st.session_state["consol_buffer"]
                 st.info("Prévia descartada.")
-           
+
         # ---- Exportar e Gerar PDF: somente quando TODOS os itens estiverem consolidados ----
         if _todos_consolidados():
-                st.markdown("---")
-                with st.container(border=True):
-                    st.subheader("Opções da Pesquisa Completa")
+            st.markdown("---")
+            with st.container(border=True):
+                st.subheader("Opções da Pesquisa Completa")
 
-                    exp_cols = st.columns(2)
+                exp_cols = st.columns(2)
 
-                    # 1) Exportar .pkl com todo o estado
-                    with exp_cols[0]:
-                        st.markdown("**Salvar Análise Atual**")
-                        state_to_save = {
-                            "itens_analisados": st.session_state.itens_analisados,
-                            "item_atual": st.session_state.item_atual,
-                            "tipo_analise": st.session_state.tipo_analise,
-                            "itens": st.session_state.itens,
-                            "fontes": st.session_state.fontes,
-                            "propostas": st.session_state.propostas,
-                        }
-                        st.download_button(
-                            label="💾 Exportar Pesquisa (.pkl)",
-                            data=pickle.dumps(state_to_save),
-                            file_name="pesquisa_mercado_salva.pkl",
-                            mime="application/octet-stream",
-                            use_container_width=True,
+                # 1) Exportar .pkl com todo o estado
+                with exp_cols[0]:
+                    st.markdown("**Salvar Análise Atual**")
+                    state_to_save = {
+                        "itens_analisados": st.session_state.itens_analisados,
+                        "item_atual": st.session_state.item_atual,
+                        "tipo_analise": st.session_state.tipo_analise,
+                        "itens": st.session_state.itens,
+                        "fontes": st.session_state.fontes,
+                        "propostas": st.session_state.propostas,
+                    }
+                    st.download_button(
+                        label="💾 Exportar Pesquisa (.pkl)",
+                        data=pickle.dumps(state_to_save),
+                        file_name="pesquisa_mercado_salva.pkl",
+                        mime="application/octet-stream",
+                        use_container_width=True,
+                    )
+
+                # 2) Gerar PDF completo
+                with exp_cols[1]:
+                    st.markdown("**Gerar Relatório Final em PDF**")
+                    num_processo_pdf = st.text_input("Nº do Processo (para PDF)", key="num_processo_pdf_final_lanc")
+
+                    if not st.session_state.itens_analisados:
+                        st.info("Consolide itens no relatório (acima) para gerar o PDF.")
+                    elif not (num_processo_pdf or "").strip():
+                        st.warning("Informe o nº do processo.")
+                    else:
+                        pdf_bytes = criar_pdf_completo(
+                            st.session_state.itens_analisados,
+                            num_processo_pdf,
+                            st.session_state.tipo_analise
                         )
-
-                    # 2) Gerar PDF completo
-                    with exp_cols[1]:
-                        st.markdown("**Gerar Relatório Final em PDF**")
-                        num_processo_pdf = st.text_input("Nº do Processo (para PDF)", key="num_processo_pdf_final_lanc")
-
-                        if not st.session_state.itens_analisados:
-                            st.info("Consolide itens no relatório (acima) para gerar o PDF.")
-                        elif not (num_processo_pdf or "").strip():
-                            st.warning("Informe o nº do processo.")
-                        else:
-                            pdf_bytes = criar_pdf_completo(
-                                st.session_state.itens_analisados,
-                                num_processo_pdf,
-                                st.session_state.tipo_analise
-                            )
-                            st.download_button(
-                                label="📄 Gerar PDF Completo",
-                                data=pdf_bytes,
-                                file_name=f"Relatorio_Completo_{num_processo_pdf.replace('/', '-')}.pdf",
-                                mime="application/pdf",
-                                use_container_width=True,
-                                type="primary",
-                            )
+                        st.download_button(
+                            label="📄 Gerar PDF Completo",
+                            data=pdf_bytes,
+                            file_name=f"Relatorio_Completo_{num_processo_pdf.replace('/', '-')}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True,
+                            type="primary",
+                        )
         else:
             st.info("As opções de exportação e PDF ficam disponíveis quando **todos os itens** cadastrados estiverem consolidados no relatório.")
-               
+
+
 def pagina_guia():
+    """Guia resumido embutido (sem botão flutuante)."""
     st.title("Guia rápido da Ferramenta de Avaliação de Pesquisa de Mercado")
     st.caption("Versão resumida, embutida no aplicativo • Atalhos e exemplos")
 
@@ -1185,26 +1410,14 @@ Dúvidas, sugestões e melhorias:
 - **Manual STJ**: acesse o *Manual de Pesquisa de Preços do STJ* para as regras de negócio.
 """)
 
-# ------------------ Navegação ------------------
-carregar_estilo()
-cols = st.columns(5)  # <— de 4 para 5 colunas
-with cols[0]:
-    st.button("Início", on_click=ir_para_inicio, use_container_width=True,
-              type="primary" if st.session_state.pagina_atual == "inicio" else "secondary")
-with cols[1]:
-    st.button("Análise de Item", on_click=ir_para_analise, use_container_width=True,
-              type="primary" if st.session_state.pagina_atual == "analise" else "secondary")
-with cols[2]:
-    st.button("Lançar por Fonte", on_click=ir_para_lancamento, use_container_width=True,
-              type="primary" if st.session_state.pagina_atual == "lancamento" else "secondary")
-with cols[3]:
-    st.button("Relatórios", on_click=ir_para_relatorios, use_container_width=True,
-              type="primary" if st.session_state.pagina_atual == "relatorios" else "secondary")
-with cols[4]:
-    st.button("Guia", on_click=lambda: st.session_state.update(pagina_atual="guia"),
-              use_container_width=True,
-              type="primary" if st.session_state.pagina_atual == "guia" else "secondary")
+# ============================== Bootstrap / Router ==============================
 
+carregar_estilo()
+nav_lateral()        # menu lateral (colapsado por padrão)
+breadcrumb_topo()    # trilha no topo da página
+_sync_page_from_query()  # garante que ?page=... reflita na navegação
+
+# Router simples
 if st.session_state.pagina_atual == "inicio":
     pagina_inicial()
 elif st.session_state.pagina_atual == "analise":
@@ -1213,7 +1426,10 @@ elif st.session_state.pagina_atual == "lancamento":
     pagina_lancamento_por_fonte()
 elif st.session_state.pagina_atual == "relatorios":
     pagina_relatorio()
-elif st.session_state.pagina_atual == "guia":   # <— NOVO
+elif st.session_state.pagina_atual == "guia":
     pagina_guia()
+
+# Importante: REMOVIDO o botão flutuante "Guia"
+# (o usuário acessa o Guia pelo menu lateral)
 
 rodape_stj()

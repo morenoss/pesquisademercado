@@ -27,6 +27,9 @@
   --space-1: 6px;
   --space-2: 10px;
   --space-3: 14px;
+
+  /* Layout auxiliares */
+  --footer-h: 56px;            /* altura do rodapé fixo */
 }
 
 /* ==========================================================================
@@ -39,7 +42,7 @@ button[kind="primary"]{
   border: 1px solid var(--stj-primary-600) !important;
   background: var(--stj-primary-700) !important;
   color: #fff !important;
-  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
   min-height: 42px;
 }
 .stButton > button:hover,
@@ -51,6 +54,9 @@ button[kind="primary"]:hover{
 .stDownloadButton > button:focus-visible,
 button[kind="primary"]:focus-visible{
   outline: none !important;
+  /* Fallback antigo */
+  box-shadow: 0 0 0 3px rgba(0,65,100,.25) !important;
+  /* Browsers modernos */
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--stj-primary-700) 25%, transparent) !important;
 }
 .stButton > button:disabled,
@@ -59,29 +65,38 @@ button[kind="primary"]:disabled{
   opacity:.6; cursor:not-allowed;
 }
 
-/* Secondary */
+/* Secondary (botão-link) */
 button[kind="secondary"]{
   color: var(--stj-primary-700) !important;
   border: 1px solid var(--stj-primary-600) !important;
   background: #fff !important;
   border-radius: var(--radius-md) !important;
   min-height: 42px;
+  transition: background .15s ease, box-shadow .15s ease;
 }
 button[kind="secondary"]:hover{
   background: var(--stj-primary-100) !important;
 }
+button[kind="secondary"]:focus-visible{
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0,65,100,.18) !important;
+}
 
 /* ==========================================================================
    Tabs — sem fundo, selecionada em negrito + linha inferior azul
+   (BaseWeb + fallback ARIA)
    ========================================================================== */
-.stTabs [data-baseweb="tab-list"]{
+.stTabs [data-baseweb="tab-list"],
+.stTabs [role="tablist"]{
   border-bottom:1px solid #e5e7eb; gap:12px;
 }
-.stTabs [data-baseweb="tab"]{
+.stTabs [data-baseweb="tab"],
+.stTabs [role="tab"]{
   background:transparent !important;
   color: var(--stj-text-700) !important;
 }
-.stTabs [data-baseweb="tab"]:hover{
+.stTabs [data-baseweb="tab"]:hover,
+.stTabs [role="tab"]:hover{
   color: var(--stj-primary-700) !important;
 }
 .stTabs [aria-selected="true"]{
@@ -96,8 +111,9 @@ button[kind="secondary"]:hover{
 
 /* ==========================================================================
    Slider — trilho claro, preenchido azul, números AZUIS
+   Obs.: mantemos seletores BaseWeb, mas evitamos [style*="color"] muito amplo.
    ========================================================================== */
-/* limpa fundos indesejados do container */
+/* limpar fundos do container */
 .stSlider [data-baseweb="slider"],
 .stSlider [data-baseweb="slider"] > div{
   background: transparent !important;
@@ -117,19 +133,16 @@ button[kind="secondary"]:hover{
   background: var(--stj-primary-700) !important;
   border: 2px solid #fff !important;
 }
-/* valores e ticks SEM vermelho */
+/* valores e ticks */
 .stSlider [data-baseweb="slider"] [class*="ThumbValue"],
-.stSlider [data-baseweb="slider"] [class*="value"],
-.stSlider [data-testid="stTickBar"] span,
 .stSlider [data-baseweb="slider"] [class*="tick"],
-.stSlider [data-baseweb="slider"] span[style*="color"],
-.stSlider [data-baseweb="slider"] div[style*="color"]{
+.stSlider [data-testid="stTickBar"] span{
   color: var(--stj-primary-700) !important;
   background: transparent !important;
 }
 
 /* ==========================================================================
-   Checkbox — amarelo institucional
+   Checkbox — amarelo institucional + foco visível
    ========================================================================== */
 .stCheckbox input[type="checkbox"]{
   accent-color: var(--stj-amber-500);
@@ -142,11 +155,14 @@ button[kind="secondary"]:hover{
   background: var(--stj-amber-500) !important;
   border-color: var(--stj-amber-500) !important;
 }
+.stCheckbox input[type="checkbox"]:focus-visible + div{
+  box-shadow: 0 0 0 3px rgba(242,192,55,.35) !important; /* foco */
+}
 
 /* ==========================================================================
    Cards/Chips dos tipos e “Próximos passos”
    ========================================================================== */
-/* Selo de seleção (quando quiser usar; opcional) */
+/* Selo de seleção (opcional) */
 .stj-chip{
   display:inline-block;
   margin-top: var(--space-1);
@@ -194,14 +210,18 @@ button[kind="secondary"]:hover{
 }
 
 /* ==========================================================================
-   Rodapé institucional
+   Rodapé institucional fixo (+ compensação no conteúdo)
    ========================================================================== */
 .stj-footer{
   position: fixed;
   left: 0; right: 0; bottom: 0;
+  height: var(--footer-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: var(--stj-card-50);
   border-top: 1px solid var(--stj-border);
-  padding: 10px 18px;
+  padding: 0 18px;
   font-size: .9rem;
   color: var(--stj-text-900);
   z-index: 1000;
@@ -211,5 +231,6 @@ button[kind="secondary"]:hover{
   text-decoration: none;
 }
 .stj-footer a:hover{ text-decoration: underline; }
+
 /* margem extra para o conteúdo não ficar coberto */
-.block-container{ padding-bottom: 76px; }
+.block-container{ padding-bottom: calc(var(--footer-h) + 20px); }
