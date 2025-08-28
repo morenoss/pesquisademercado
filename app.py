@@ -4,6 +4,7 @@ import os
 import re
 import uuid
 import pickle
+import json
 import subprocess
 from pathlib import Path
 
@@ -28,6 +29,22 @@ st.set_page_config(
 )
 st.logo("assets/logo_stj.png", link="https://www.stj.jus.br", size="large")
 
+# --- Google Analytics (GA4) ---
+GA_MEASUREMENT_ID = "G-E1T298PPDR"  
+
+# injeta o script do GA4 apenas uma vez por sessão
+if not st.session_state.get("_ga_loaded", False):
+    st.session_state._ga_loaded = True
+    st.markdown(f"""
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){{dataLayer.push(arguments);}}
+      gtag('js', new Date());
+      gtag('config', '{GA_MEASUREMENT_ID}');
+    </script>
+    """, unsafe_allow_html=True)
 
 # ============================== Estado (session_state) ==============================
 
@@ -104,6 +121,48 @@ def _todos_consolidados() -> bool:
     }
     return trip_itens.issubset(trip_consol) and len(trip_consol) >= len(trip_itens)
 
+def ga_track_page(page_key: str, page_title: str):
+    """
+    Dispara um 'page_view' do GA4 quando a página interna muda.
+    Usa a querystring ?page=... como parte do path para separar as telas.
+    """
+    if not GA_MEASUREMENT_ID:
+        return
+    safe_title = page_title.replace("'", "\\'")
+    safe_path  = f"/app?page={page_key}"
+    st.markdown(f"""
+    <script>
+      try {{
+        // envia um page_view "virtual" para o GA4
+        gtag('event', 'page_view', {{
+          page_title: '{safe_title}',
+          page_location: window.location.href,
+          page_path: '{safe_path}'
+        }});
+      }} catch(e) {{}}
+    </script>
+    """, unsafe_allow_html=True)
+
+def _js_escape(s: str) -> str:
+    return (s or "").replace("\\", "\\\\").replace("'", "\\'")
+
+def ga_event(name: str, params: dict | None = None):
+    """
+    Dispara um evento GA4 (gtag).
+    Uso: ga_event('nome_evento', {'chave': 'valor', 'valor_numerico': 123})
+    """
+    if not GA_MEASUREMENT_ID:
+        return
+    payload = json.dumps(params or {}, ensure_ascii=False)
+    safe_name = _js_escape(name)
+    st.markdown(f"""
+    <script>
+      try {{
+        gtag('event', '{safe_name}', {payload});
+      }} catch(e) {{}}
+    </script>
+    """, unsafe_allow_html=True)
+
 
 # ---------------- Navegação via querystring (API nova: st.query_params) ----------------
 
@@ -118,6 +177,12 @@ def _goto(page: str):
     """Atualiza o router e a URL (?page=...)."""
     st.query_params["page"] = page
     st.session_state.pagina_atual = page
+    _nomes_pag = {
+        "inicio": "Início", "analise": "Análise de Item",
+        "lancamento": "Lançar por Fonte", "relatorios": "Relatórios",
+        "guia": "Guia",
+    }
+    ga_track_page(page, _nomes_pag.get(page, "Tela"))
 
 
 def carregar_estilo():
@@ -197,14 +262,13 @@ def breadcrumb_topo():
         unsafe_allow_html=True,
     )
 
-
 def novo_id(prefixo="id") -> str:
     """Gera um id curto e legível para itens/fontes."""
     return f"{prefixo}_{uuid.uuid4().hex[:8]}"
 
 # URLs (com fallback sensato)
 REPO_URL = os.environ.get("APP_REPO_URL", "https://github.com/morenoss/pesquisademercado")
-APP_URL  = os.environ.get("APP_URL",  "https://pesquisamercadostj.streamlit.app/")  # corrigido o typo
+APP_URL  = os.environ.get("APP_URL",  "https://persquisamercadostj.streamlit.app/")  # corrigido o typo
 def rodape_stj():
     st.markdown(
         f"""
@@ -214,7 +278,7 @@ def rodape_stj():
           <a href="mailto:morenos@stj.jus.br">morenos@stj.jus.br</a><br/>
           <small>
             Código licenciado sob
-            <a href="{REPO_URL}/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>.
+            <a href="{REPO_URL}/blob/main/LICENSE.txt" target="_blank" rel="noopener">MIT</a>.
             Marcas e brasões: uso institucional.
           </small>
         </div>
@@ -328,6 +392,7 @@ def pagina_inicial():
             key="btn_tipo_padrao",
         ):
             selecionar("Pesquisa Padrão")
+            ga_event('selecionar_tipo', {'tipo_analise': 'Pesquisa Padrão'})
 
     # --- Prorrogação (VERDE) ---
     with col2:
@@ -348,6 +413,7 @@ def pagina_inicial():
             key="btn_tipo_prorrog",
         ):
             selecionar("Prorrogação")
+            ga_event('selecionar_tipo', {'tipo_analise': 'Prorrogação'})
 
     # --- Mapa de Preços (AMARELO) ---
     with col3:
@@ -368,6 +434,7 @@ def pagina_inicial():
             key="btn_tipo_mapa",
         ):
             selecionar("Mapa de Preços")
+            ga_event('selecionar_tipo', {'tipo_analise': 'Mapa de Preços'})
 
     # ---- Próximos passos: mostram só DEPOIS da seleção ----
     if selecionado:
@@ -540,6 +607,15 @@ def pagina_analise():
                     df_com_preco, limiar_elevado, limiar_inexequivel
                 )
                 st.session_state.usar_preco_minimo = usar_preco_minimo
+                # GA4: clique em analisar
+                ga_event('analisar_precos', {
+                    'tela': 'analise_item',
+                    'tipo_analise': st.session_state.tipo_analise,
+                    'precos_informados': int(df_com_preco.shape[0]),
+                    'limiar_elevado_pct': int(limiar_elevado),
+                    'limiar_inexequivel_pct': int(limiar_inexequivel),
+                    'usar_preco_minimo': bool(usar_preco_minimo),
+                }) 
             else:
                 st.warning("Nenhum preço foi inserido para análise.")
 
@@ -754,6 +830,16 @@ def pagina_analise():
                 if "justificativa_atual" in st.session_state:
                     del st.session_state["justificativa_atual"]
                 st.session_state.analise_resultados = None
+                # GA4: salvar item (novo/edição)
+                ga_event('salvar_item', {
+                    'tela': 'analise_item',
+                    'tipo_analise': st.session_state.tipo_analise,
+                    'modo': 'edicao' if modo_edicao else 'novo',
+                    'tem_problemas': bool(problemas),
+                    'usar_preco_minimo': bool(usar_preco_minimo),
+                    'valor_unit_mercado': float(preco_mercado_final),
+                    'quantidade': int(item_quantidade),
+                })               
                 st.success("Item salvo no relatório.")
                 st.rerun()
 
@@ -796,6 +882,11 @@ def pagina_analise():
                 "fontes": st.session_state.fontes,
                 "propostas": st.session_state.propostas,
             }
+           
+            # GA4: opções de exportação exibidas (analise_item)
+            ga_event('mostrar_opcoes_exportacao', {
+                'tela': 'analise_item'
+            })
 
             st.download_button(
                 label="💾 Exportar Pesquisa (.pkl)",
@@ -1070,6 +1161,13 @@ def pagina_lancamento_por_fonte():
                         "preco": float(preco),
                         "sei": sei,
                     })
+                # GA4: salvar preços da fonte
+                ga_event('salvar_precos_fonte', {
+                    'tela': 'lancamento_por_fonte',
+                    'fonte_nome': fonte_nome,
+                     'qtd_itens': int(len(st.session_state.itens)),
+                })
+   
                 st.success("Preços salvos para esta fonte.")
 
     # ------------- TAB 4: CONSOLIDAR EM ITENS ANALISADOS -------------
@@ -1213,6 +1311,13 @@ def pagina_lancamento_por_fonte():
                 })
 
             st.session_state.consol_buffer = buffer
+            # GA4: gerar prévia
+            ga_event('gerar_previa', {
+                'tela': 'lancamento_por_fonte',
+                'tipo_analise': st.session_state.tipo_analise,
+                'itens_com_preco': int(len(buffer)),
+            })
+
 
         # --- Se houver PRÉVIA, mostra, permite justificar e confirmar ---
         buffer = st.session_state.get("consol_buffer", [])
@@ -1276,6 +1381,14 @@ def pagina_lancamento_por_fonte():
                         item["item_num"] = i + 1
 
                     st.success(f"{len(buffer)} item(ns) consolidados no relatório.")
+                    # GA4: confirmar consolidação
+                    ga_event('confirmar_consolidacao', {
+                        'tela': 'lancamento_por_fonte',
+                        'itens_consolidados': int(len(buffer)),
+                        'substituir_existentes': bool(substituir),
+                    })
+
+
                     st.dataframe(prev_df, use_container_width=True, hide_index=True, column_config=colcfg)
 
                     # limpa prévia (sem rerun, para manter feedback visível)
@@ -1284,6 +1397,7 @@ def pagina_lancamento_por_fonte():
             if c2.button("Descartar PRÉVIA"):
                 del st.session_state["consol_buffer"]
                 st.info("Prévia descartada.")
+                ga_event('descartar_previa', {'tela': 'lancamento_por_fonte'})
 
         # ---- Exportar e Gerar PDF: somente quando TODOS os itens estiverem consolidados ----
         if _todos_consolidados():
@@ -1304,6 +1418,12 @@ def pagina_lancamento_por_fonte():
                         "fontes": st.session_state.fontes,
                         "propostas": st.session_state.propostas,
                     }
+                    # GA4: opções de exportação exibidas (lancamento_por_fonte)
+                    ga_event('mostrar_opcoes_exportacao', {
+                        'tela': 'lancamento_por_fonte',
+                        'todos_consolidados': True
+                    })
+
                     st.download_button(
                         label="💾 Exportar Pesquisa (.pkl)",
                         data=pickle.dumps(state_to_save),
@@ -1416,6 +1536,17 @@ carregar_estilo()
 nav_lateral()        # menu lateral (colapsado por padrão)
 breadcrumb_topo()    # trilha no topo da página
 _sync_page_from_query()  # garante que ?page=... reflita na navegação
+
+# --- GA4: page_view por tela interna ---
+_nomes_pag = {
+    "inicio": "Início",
+    "analise": "Análise de Item",
+    "lancamento": "Lançar por Fonte",
+    "relatorios": "Relatórios",
+    "guia": "Guia",
+}
+_pag_key = st.session_state.get("pagina_atual", "inicio")
+ga_track_page(_pag_key, _nomes_pag.get(_pag_key, "Tela"))
 
 # Router simples
 if st.session_state.pagina_atual == "inicio":
