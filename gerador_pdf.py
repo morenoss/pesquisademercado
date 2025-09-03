@@ -73,12 +73,12 @@ class PDF(FPDF):
         self.set_xy(x_text, y_text)
 
         self.set_text_color(*AZUL)
-        self.set_font("Helvetica", "B", 15)
+        self.set_font("Helvetica", "B", 18)
         self.cell(0, 8, "RELATORIO DE PESQUISA DE MERCADO", ln=1)
 
         # subtítulo (Processo | Tipo) logo abaixo do título
         self.set_x(x_text)
-        self.set_font("Helvetica", "", 9)
+        self.set_font("Helvetica", "", 12)
         self.set_text_color(90, 90, 90)
         self.cell(0, 5, f"Processo: {self.num_processo}  |  Tipo de Analise: {self.tipo_analise}", ln=1)
 
@@ -124,6 +124,41 @@ class PDF(FPDF):
             if redraw_header and self._current_table:
                 headers, widths, aligns, font_size = self._current_table
                 self.table_header(headers, widths, aligns, font_size)
+    
+    def para_height(self, w, text, line_h=None):
+        """Altura total (aproximada) necessária para um parágrafo."""
+        lh = line_h or self.line_h
+        lines = self.split_lines(w if w else self.usable_w, text)
+        return max(1, len(lines)) * lh
+
+    def safe_multicell(self, w, h, text, border=0, align="L", fill=False):
+        """
+        Quebra o texto em linhas e imprime linha a linha, verificando espaço
+        antes de cada linha. Assim, o parágrafo pode continuar em novas páginas.
+        Use para parágrafos SEM caixa (border=0).
+        """
+        lines = self.split_lines(w if w else self.usable_w, text)
+        x0 = self.get_x()
+        for line in lines:
+            self.ensure_space(h, redraw_header=False)
+            self.set_x(x0)
+            # multi_cell move o cursor para a próxima linha e volta para a margem
+            self.multi_cell(w, h, sanitize(line), border=0, align=align, fill=fill)
+
+    def write_label_text(self, label, text, label_w, line_h=6, font_label=("Helvetica","B",10), font_text=("Helvetica","",10)):
+        """
+        Imprime um par 'Rótulo: Texto longo', quebrando o texto em múltiplas
+        linhas e paginando quando necessário. O rótulo aparece só na 1ª linha.
+        """
+        lines = self.split_lines(self.usable_w - label_w, text)
+        for i, line in enumerate(lines):
+            self.ensure_space(line_h, redraw_header=False)
+            self.set_font(*font_label if i == 0 else ("Helvetica","",10))
+            self.cell(label_w, line_h, label if i == 0 else "", ln=0)
+            self.set_font(*font_text)
+            # manter na mesma linha, à direita do rótulo
+            self.multi_cell(self.usable_w - label_w, line_h, sanitize(line))
+
 
     # -------- tabela com cabeçalho “sticky” --------
     def table_header(self, headers, widths, aligns, font_size=8):
@@ -160,7 +195,7 @@ class PDF(FPDF):
 def pagina_consolidada(pdf: PDF, itens_analisados, tipo_analise):
     pdf.add_page()
 
-    # ---------- BANNER COMPARATIVO (cores STJ) ----------
+    # ---------- TEXTO DO BANNER (por tipo) ----------
     texto_banner = ""
     if tipo_analise == "Prorrogacao":
         total_m = sum(i.get("valor_total_mercado", 0) for i in itens_analisados)
@@ -182,24 +217,29 @@ def pagina_consolidada(pdf: PDF, itens_analisados, tipo_analise):
             f"VALOR TOTAL DOS MELHORES PRECOS: R$ {br_currency(total_best)} | "
             f"DIFERENCA: R$ {br_currency(abs(diff))} - {sentido}"
         )
+    else:
+        # Pesquisa Padrão — exibe apenas o total obtido na pesquisa
+        total_m = sum(i.get("valor_total_mercado", 0) for i in itens_analisados)
+        texto_banner = f"VALOR TOTAL OBTIDO NA PESQUISA DE MERCADO: R$ {br_currency(total_m)}"
 
-    # um respiro depois do cabeçalho
+    # --- respiro após o cabeçalho da página ---
     pdf.ln(4)
-
-    if texto_banner:
-        pdf.set_font("Helvetica", "B", 9)
-        pdf.set_text_color(0, 65, 100)     # azul STJ
-        pdf.set_fill_color(230, 230, 230)  # cinza médio (um pouco mais escuro)
-        pdf.set_draw_color(200, 200, 200)
-        pdf.set_x(pdf.l_margin)
-        pdf.multi_cell(pdf.usable_w, 7, sanitize(texto_banner), border=1, align="C", fill=True)
-        pdf.set_text_color(0, 0, 0)
-        pdf.ln(2)
 
     # ---------- TÍTULO DO QUADRO ----------
     pdf.set_font("Helvetica", "B", 12)
     pdf.cell(0, 8, "QUADRO RESUMO CONSOLIDADO", ln=1, align="C")
     pdf.ln(1)
+
+    # ---------- BANNER (abaixo do título e acima da tabela) ----------
+    if texto_banner:
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(0, 65, 100)     # azul STJ
+        pdf.set_fill_color(230, 230, 230)  # cinza médio
+        pdf.set_draw_color(200, 200, 200)
+        pdf.set_x(pdf.l_margin)
+        pdf.multi_cell(pdf.usable_w, 7, sanitize(texto_banner), border=1, align="C", fill=True)
+        pdf.set_text_color(0, 0, 0)
+        pdf.ln(2)
 
     # ---------- TABELAS POR TIPO ----------
     if tipo_analise == "Prorrogacao":
@@ -266,44 +306,42 @@ def pagina_consolidada(pdf: PDF, itens_analisados, tipo_analise):
             ])
         pdf.table_rows(rows, widths, aligns, font_size=8)
 
-
 def pagina_analise_item(pdf: PDF, item_info, analise):
     pdf.add_page()
 
     # --- Título ---
     pdf.set_font("Helvetica", "B", 12)
+    pdf.ensure_space(pdf.line_h)  # garante espaço para a linha do título
     pdf.cell(0, 8, f"ANALISE DETALHADA - ITEM {item_info.get('item_num','')}", ln=1)
     pdf.ln(1)
 
-    # --- Descrição (rótulo à esquerda + texto que quebra corretamente) ---
+    # --- Descrição (rótulo + texto longo paginado) ---
     desc = sanitize(item_info.get("descricao", "N/A"))
-    pdf.set_font("Helvetica", "B", 10)
-    label_w = 28  # largura do rótulo "Descricao:"
-    pdf.cell(label_w, 6, "Descricao:", ln=0)               # não quebra linha aqui
-    pdf.set_font("Helvetica", "", 10)
-    pdf.multi_cell(pdf.usable_w - label_w, 6, desc)        # quebra e mantém dentro da margem
+    pdf.write_label_text("Descricao:", desc, label_w=28, line_h=6)
 
-    # --- Quantidade e Unidade em uma linha logo abaixo da descrição ---
-    pdf.set_x(pdf.l_margin)                                # garante retorno à margem esquerda
+    # --- Quantidade / Unidade (uma linha, com verificação de espaço) ---
+    pdf.set_x(pdf.l_margin)
     q = item_info.get("quantidade", "N/A")
     u = sanitize(item_info.get("unidade", "N/A"))
+    pdf.ensure_space(6)
     pdf.set_font("Helvetica", "", 10)
-    pdf.multi_cell(0, 5.5, f"Quantidade: {q}    |    Unidade: {u}")  # ocupa a largura útil
-    # (se quiser cada um em uma linha, troque por dois multi_cell(0, 5.5, ...))
+    pdf.multi_cell(0, 5.5, f"Quantidade: {q}    |    Unidade: {u}")
 
-    # Se for prorrogação, mostra o valor contratado logo abaixo
+    # --- Valor contratado (quando Prorrogacao) ---
     if pdf.tipo_analise == "Prorrogacao" and (item_info.get("valor_unit_contratado", 0) or 0) > 0:
         pdf.set_x(pdf.l_margin)
+        pdf.ensure_space(6)
         pdf.multi_cell(0, 5.5, "Valor Unitario Contratado: R$ " + br_currency(item_info["valor_unit_contratado"]))
 
-    pdf.ln(2)  # respiro pequeno antes da tabela
+    pdf.ln(2)
 
-    # Tabela de fontes (avaliacao)
+    # --- Tabela de fontes ---
     df = analise.get("df_avaliado", pd.DataFrame())
+    pdf.ensure_space(7)
     pdf.set_font("Helvetica", "B", 11)
     pdf.cell(0, 7, "Avaliacao Detalhada dos Precos", ln=1)
 
-    widths = [80, 28, 25, 40, 94]  # soma = 267
+    widths = [80, 28, 25, 40, 94]
     headers = ["FONTE", "SEI", "PRECO", "AVALIACAO", "OBSERVACAO"]
     aligns  = ["L", "C", "R", "C", "L"]
     pdf.start_table(headers, widths, aligns, font_size=8)
@@ -317,37 +355,33 @@ def pagina_analise_item(pdf: PDF, item_info, analise):
 
         rows = []
         for fonte, sei, preco, ava, obs in zip(col_fonte, col_sei, col_preco, col_avali, col_obs):
-            rows.append([
-                fonte,
-                sei,
-                "R$ " + br_currency(preco),
-                ava,
-                sanitize(obs),
-            ])
+            rows.append([fonte, sei, "R$ " + br_currency(preco), ava, sanitize(obs)])
         pdf.table_rows(rows, widths, aligns, font_size=8)
 
     pdf.ln(2)
 
-    # Métricas principais
+    # --- Resultados da Analise (garante espaço para 3 linhas) ---
+    pdf.ensure_space(7 + 6 + 6)
+    pdf.set_font("Helvetica", "B", 11)
+    pdf.cell(0, 7, "Resultados da Analise", ln=1)
+    pdf.set_font("Helvetica", "", 10)
     media  = analise.get("media", 0)
     cv     = analise.get("coef_variacao", analise.get("coef_variacao", 0)) or analise.get("coef_variacao", 0)
     minimo = (analise.get("melhor_preco_info", {}) or {}).get("PREÇO", 0)
     metodo = item_info.get("metodo_final", analise.get("metodo_sugerido", "N/A"))
-
-    pdf.set_font("Helvetica", "B", 11)
-    pdf.cell(0, 7, "Resultados da Analise", ln=1)
-    pdf.set_font("Helvetica", "", 10)
     pdf.cell(0, 6, f"MEDIA (validos): R$ {br_currency(media)}    COEFICIENTE DE VARIACAO: {float(cv):.2f}%", ln=1)
     pdf.cell(0, 6, f"PRECO MINIMO (valido): R$ {br_currency(minimo)}    METODO ESTATISTICO: {sanitize(metodo)}", ln=1)
     pdf.ln(2)
 
-    # Blocos especificos por modo
+    # --- Banners específicos por modo (curtos → só garantir espaço) ---
     if pdf.tipo_analise == "Mapa de Precos":
         mp = analise.get("melhor_preco_info", {}) or {}
         melhor_preco = mp.get("PREÇO", 0) or mp.get("PRECO", 0)
         fonte = mp.get("EMPRESA/FONTE", "")
         sei   = mp.get("LOCALIZADOR SEI", "")
         texto = f"Melhor preco da pesquisa (apos filtros): R$ {br_currency(melhor_preco)} - Fonte: {sanitize(fonte)} | SEI: {sanitize(sei)}"
+        total_h = pdf.para_height(pdf.usable_w, texto, line_h=7)
+        pdf.ensure_space(total_h)
         pdf.set_font("Helvetica", "B", 10)
         pdf.set_fill_color(*pdf.fill_gray)
         pdf.multi_cell(0, 7, sanitize(texto), border=1, align="C", fill=True)
@@ -360,39 +394,45 @@ def pagina_analise_item(pdf: PDF, item_info, analise):
         comp = "mais caro" if delta > 0 else ("mais barato" if delta < 0 else "igual")
         txt = (
             f"Comparacao (unitario): Mercado = R$ {br_currency(mercado)} vs Contratado = R$ {br_currency(contratado)} "
-            f"-> Mercado esta {comp} em R$ {br_currency(abs(delta))}."
+            f"| Preco de Mercado esta {comp} em R$ {br_currency(abs(delta))}."
         )
+        total_h = pdf.para_height(pdf.usable_w, txt, line_h=7)
+        pdf.ensure_space(total_h)
         pdf.set_font("Helvetica", "B", 10)
         pdf.set_fill_color(*pdf.fill_gray)
         pdf.multi_cell(0, 7, sanitize(txt), border=1, align="C", fill=True)
-        # avaliacao salva
         aval = sanitize(item_info.get("avaliacao_preco_contratado", ""))
         if aval:
             pdf.ln(1)
+            pdf.ensure_space(6)
             pdf.set_font("Helvetica", "", 10)
             pdf.multi_cell(0, 6, f"Avaliacao: {aval}")
 
-    # Problemas e Justificativa
+    # --- Problemas (uma linha por item, com paginação) ---
     problemas = item_info.get("problemas", []) or []
     justificativa = (item_info.get("justificativa", "") or "").strip()
 
     if problemas:
         pdf.ln(1)
+        pdf.ensure_space(7)
         pdf.set_font("Helvetica", "B", 11)
         pdf.cell(0, 7, "Problemas encontrados", ln=1)
         pdf.set_font("Helvetica", "", 9)
         for p in problemas:
-            pdf.multi_cell(pdf.usable_w, 6, "- " + sanitize(p))
+            pdf.safe_multicell(pdf.usable_w, 6, "- " + sanitize(p))  # << pagina automaticamente
         pdf.ln(1)
 
+    # --- Justificativa (pode ocupar várias páginas) ---
     if justificativa:
+        pdf.ensure_space(7)
         pdf.set_font("Helvetica", "B", 11)
         pdf.cell(0, 7, "Justificativa", ln=1)
         pdf.set_font("Helvetica", "", 9)
-        pdf.multi_cell(pdf.usable_w, 6, sanitize(justificativa))
+        pdf.safe_multicell(pdf.usable_w, 6, sanitize(justificativa))  # << pagina automaticamente
         pdf.ln(1)
 
-    # Destaque final
+    # --- Destaque final ---
+    pdf.ensure_space(9)
     pdf.set_font("Helvetica", "B", 12)
     pdf.set_fill_color(*pdf.fill_green)
     pdf.cell(0, 9, "PRECO DE MERCADO UNITARIO: R$ " + br_currency(item_info.get("valor_unit_mercado", 0)),

@@ -6,6 +6,7 @@ import uuid
 import pickle
 import json
 import subprocess
+import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -89,6 +90,113 @@ def formatar_moeda(v) -> str:
 def formatar_moeda_html(v) -> str:
     """Formata moeda com 'R$' seguro para HTML."""
     return formatar_moeda(v).replace("R$", "R&#36;&nbsp;")
+
+def validar_processo(numero: str) -> str | None:
+    """
+    Valida: 6 dígitos + '/' + ano. Ano não pode ser futuro.
+    Retorna msg de erro (str) ou None se válido.
+    """
+    if not (numero or "").strip():
+        return "Informe o número do processo."
+    m = re.fullmatch(r"(\d{6})/(\d{4})", numero.strip())
+    if not m:
+        return "Formato inválido. Use 6 dígitos + '/' + ano (ex.: 011258/2025)."
+    ano = int(m.group(2))
+    ano_atual = datetime.date.today().year
+    if ano > ano_atual:
+        return f"O ano {ano} é maior que o atual ({ano_atual})."
+    return None
+
+def validar_sei(sei: str) -> str | None:
+    """
+    Valida nº do documento SEI: exatamente 7 dígitos.
+    Retorna msg de erro (str) ou None se válido.
+    """
+    if not (sei or "").strip():
+        return "Informe o nº do documento SEI."
+    if not re.fullmatch(r"\d{7}", sei.strip()):
+        return "O documento SEI deve ter exatamente 7 dígitos."
+    return None
+
+def _is_nan(x):
+    return x is None or (isinstance(x, float) and pd.isna(x))
+
+def sincronizar_para_lote_a_partir_de_analisados(force: bool = False):
+    """
+    Gera/atualiza st.session_state.itens, .fontes e .propostas
+    a partir de st.session_state.itens_analisados.
+
+    - Não apaga nada existente (apenas inclui o que faltar).
+    - Evita duplicatas (usa chaves por conteúdo).
+    - Se force=False, só roda quando itens/fontes ainda estão vazios.
+    """
+    analisados = st.session_state.get("itens_analisados", [])
+    if not analisados:
+        return
+
+    # Só sementeia automaticamente se ainda não existe nada
+    if not force and st.session_state.get("itens") and st.session_state.get("fontes"):
+        return
+
+    itens   = list(st.session_state.get("itens", []))
+    fontes  = list(st.session_state.get("fontes", []))
+    props   = list(st.session_state.get("propostas", []))
+
+    # Índices para evitar duplicatas
+    fonte_key_to_id = {(f["nome"], f["tipo"]): f["id"] for f in fontes}
+    item_key_to_id  = {(i["descricao"], i["unidade"], int(i["quantidade"])): i["id"] for i in itens}
+    prop_seen       = {(p["item_id"], p["fonte_id"], float(p["preco"]), p.get("sei","")) for p in props}
+
+    def ensure_fonte(nome, tipo):
+        nome = (nome or "").strip() or "—"
+        tipo = (tipo or "").strip() or "Fornecedor"
+        k = (nome, tipo)
+        if k in fonte_key_to_id:
+            return fonte_key_to_id[k]
+        fid = novo_id("fonte")
+        fontes.append({"id": fid, "nome": nome, "tipo": tipo})
+        fonte_key_to_id[k] = fid
+        return fid
+
+    def ensure_item(desc, unid, qtd, valor_contratado=0.0):
+        desc = (desc or "").strip()
+        unid = (unid or "").strip()
+        qtd  = int(qtd or 1)
+        k = (desc, unid, qtd)
+        if k in item_key_to_id:
+            return item_key_to_id[k]
+        iid = novo_id("item")
+        itens.append({
+            "id": iid, "descricao": desc, "unidade": unid,
+            "quantidade": qtd, "valor_unit_contratado": float(valor_contratado or 0.0)
+        })
+        item_key_to_id[k] = iid
+        return iid
+
+    for reg in analisados:
+        iid = ensure_item(
+            reg.get("descricao",""),
+            reg.get("unidade",""),
+            reg.get("quantidade",1),
+            # Só terá valor contratado no modo Prorrogação
+            reg.get("valor_unit_contratado", 0.0)
+        )
+
+        for row in (reg.get("df_original") or []):
+            preco = row.get("PREÇO", None)
+            if _is_nan(preco):
+                continue
+            fid = ensure_fonte(row.get("EMPRESA/FONTE",""), row.get("TIPO DE FONTE",""))
+            sei = (row.get("LOCALIZADOR SEI","") or "").strip()
+            tup = (iid, fid, float(preco), sei)
+            if tup in prop_seen:
+                continue
+            props.append({"item_id": iid, "fonte_id": fid, "preco": float(preco), "sei": sei})
+            prop_seen.add(tup)
+
+    st.session_state.itens = itens
+    st.session_state.fontes = fontes
+    st.session_state.propostas = props
 
 _TAGS_RE = re.compile("<.*?>")
 
@@ -273,7 +381,7 @@ def rodape_stj():
     st.markdown(
         f"""
         <div class="stj-footer">
-          Projeto desenvolvido pela <strong>Secretaria de Administração (STJ)</strong>.
+          <strong>Projeto desenvolvido pela Secretaria de Administração do STJ.</strong> 
           Contato: <a href="mailto:stj.sad@stj.jus.br">stj.sad@stj.jus.br</a> •
           <a href="mailto:morenos@stj.jus.br">morenos@stj.jus.br</a><br/>
           <small>
@@ -494,6 +602,9 @@ def pagina_inicial():
             loaded_state = pickle.load(uploaded_file)
             st.session_state.update(loaded_state)
             st.success("Análise carregada. Revise os cards acima e escolha como deseja continuar.")
+            # Compat: se o PKL antigo não tinha itens/fontes/propostas,
+            # cria a estrutura do "lote" a partir dos itens analisados.
+            sincronizar_para_lote_a_partir_de_analisados(force=False)
         except Exception as e:
             st.error(f"Erro ao carregar o ficheiro: {e}")
 
@@ -543,8 +654,11 @@ def pagina_analise():
         )
         if st.session_state.tipo_analise == "Prorrogação":
             item_valor_contratado = cols[2].number_input(
-                "Valor Unitário Contratado", min_value=0.01, format="%.2f",
-                value=dados_atuais.get("valor_unit_contratado", 0.01)
+                "Valor Unitário Contratado (R$)",
+                min_value=0.01,
+                step=0.01,
+                format="%.2f",
+                value=float(dados_atuais.get("valor_unit_contratado", 0.01) or 0.01),
             )
 
     # ------------------------ Tabela de preços ------------------------
@@ -570,6 +684,8 @@ def pagina_analise():
             column_config={
                 "TIPO DE FONTE": st.column_config.SelectboxColumn(options=tipos_de_fonte_opcoes),
                 "PREÇO": st.column_config.NumberColumn(format="R$ %.2f"),
+                "LOCALIZADOR SEI": st.column_config.TextColumn(
+                help="Informe o nº do documento SEI com 7 dígitos (ex.: 0653878)"),
             },
             use_container_width=True,
             key=f"editor_{st.session_state.edit_item_index}",
@@ -636,12 +752,14 @@ def pagina_analise():
                 .reset_index(drop=True)
             )
             df_show["OBSERVAÇÃO"] = df_show["OBSERVAÇÃO_CALCULADA"].apply(strip_html)
+            df_vis = df_show.copy()
+            df_vis["PREÇO (BR)"] = df_vis["PREÇO"].map(lambda v: formatar_moeda(v) if pd.notna(v) else "")
             st.dataframe(
-                df_show[["EMPRESA/FONTE", "TIPO DE FONTE", "LOCALIZADOR SEI", "PREÇO", "AVALIAÇÃO", "OBSERVAÇÃO"]],
+                df_vis[["EMPRESA/FONTE","TIPO DE FONTE","LOCALIZADOR SEI","PREÇO (BR)","AVALIAÇÃO","OBSERVAÇÃO"]],
                 use_container_width=True,
                 hide_index=True,
             )
-
+        
             # Observações detalhadas (visual simples, cinza, sem fundo)
             obs_items = []
             for _, r in df_show.iterrows():
@@ -686,13 +804,13 @@ def pagina_analise():
                 else resultados.get("preco_mercado_calculado", 0)
             )
             with col_res1:
-                st.metric("MÉDIA (válidos)", f"R$ {resultados.get('media', 0):.2f}")
-                st.metric("PREÇO MÍNIMO (válido)", f"R$ {resultados.get('melhor_preco_info', {}).get('PREÇO', 0):.2f}")
+                st.metric("MÉDIA (válidos)", formatar_moeda(resultados.get('media', 0)))
+                st.metric("PREÇO MÍNIMO (válido)", formatar_moeda(resultados.get('melhor_preco_info', {}).get('PREÇO', 0)))
             with col_res2:
                 st.metric("COEFICIENTE DE VARIAÇÃO", f"{resultados.get('coef_variacao', 0):.2f}%")
                 st.metric("MÉTODO ESTATÍSTICO", metodo_final)
 
-            st.success(f"**PREÇO DE MERCADO UNITÁRIO: R$ {preco_mercado_final:.2f}**")
+            st.success(f"**PREÇO DE MERCADO UNITÁRIO: {formatar_moeda(preco_mercado_final)}**")
 
             # Caixas informativas
             st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
@@ -761,6 +879,24 @@ def pagina_analise():
                     )
                 except Exception:
                     df_salvar = pd.DataFrame(df_editado)
+                # Validar SEI das linhas com PREÇO preenchido
+               
+                erros_sei = []
+                for idx_row, row in df_salvar.iterrows():
+                    preco = row.get("PREÇO", None)
+                    if preco is None or (isinstance(preco, float) and pd.isna(preco)):
+                        continue  # só valida SEI quando há preço
+                    sei_val = (row.get("LOCALIZADOR SEI", "") or "").strip()
+                    msg = validar_sei(sei_val)
+                    if msg:
+                        fonte_nome = row.get("EMPRESA/FONTE", "—")
+                        erros_sei.append(f"Linha {idx_row+1} ({fonte_nome}): {msg}")
+
+                if erros_sei:
+                    st.error("Corrija os campos 'LOCALIZADOR SEI' antes de salvar o item:")
+                    for e in erros_sei:
+                        st.markdown(f"- {e}")
+                    st.stop()
 
                 registro = {
                     "item_num": dados_atuais.get("item_num", st.session_state.item_atual),
@@ -841,6 +977,8 @@ def pagina_analise():
                     'quantidade': int(item_quantidade),
                 })               
                 st.success("Item salvo no relatório.")
+                # Mantém o fluxo "por fonte" em sincronia imediatamente
+                sincronizar_para_lote_a_partir_de_analisados(force=True)
                 st.rerun()
 
     # ------------------------ Lista de itens salvos ------------------------
@@ -855,9 +993,10 @@ def pagina_analise():
                 with cols[0]:
                     st.markdown(f"**Item {item['item_num']}:** {item.get('descricao', 'N/A')}")
                     st.markdown(
-                        f"<small>Valor Unitário (mercado): R$ {item.get('valor_unit_mercado', 0):.2f}</small>",
+                        f"<small>Valor Unitário (mercado): {formatar_moeda(item.get('valor_unit_mercado', 0))}</small>",
                         unsafe_allow_html=True,
                     )
+                    
                 with cols[1]:
                     btn_cols = st.columns([1, 1, 1, 0.5, 0.5])
                     btn_cols[0].button("✏️ Editar", key=f"edit_{i}", on_click=acao_editar, args=(i,), use_container_width=True)
@@ -897,26 +1036,31 @@ def pagina_analise():
             )
         with exp_cols[1]:
             st.markdown("**Gerar Relatório Final em PDF**")
-            num_processo_pdf = st.text_input("Nº do Processo (para PDF)", key="num_processo_pdf_final")
+            num_processo_pdf = st.text_input("Nº do Processo (para PDF)", key="num_processo_pdf_final", placeholder="011258/2025")
+
             if not st.session_state.itens_analisados:
                 st.info("Adicione itens para gerar o PDF.")
-            elif not num_processo_pdf.strip():
-                st.warning("Informe o nº do processo.")
             else:
-                pdf_bytes = criar_pdf_completo(
-                    st.session_state.itens_analisados,
-                    num_processo_pdf,
-                    st.session_state.tipo_analise
-                )
-                st.download_button(
-                    label="📄 Gerar PDF Completo",
-                    data=pdf_bytes,
-                    file_name=f"Relatorio_Completo_{num_processo_pdf.replace('/', '-')}.pdf",
-                    mime="application/pdf",
-                    use_container_width=True,
-                    type="primary",
-                )
-
+                if not (num_processo_pdf or "").strip():
+                    st.warning("Informe o nº do processo.")
+                else:
+                    erro_proc = validar_processo(num_processo_pdf)
+                    if erro_proc:
+                        st.error(erro_proc)
+                    else:
+                        pdf_bytes = criar_pdf_completo(
+                            st.session_state.itens_analisados,
+                            num_processo_pdf,
+                            st.session_state.tipo_analise
+                        )
+                        st.download_button(
+                            label="📄 Gerar PDF Completo",
+                            data=pdf_bytes,
+                            file_name=f"Relatorio_Completo_{num_processo_pdf.replace('/', '-')}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True,
+                            type="primary",
+                        )
 
 def pagina_relatorio():
     """Visualização consolidada do relatório (somente leitura)."""
@@ -928,9 +1072,12 @@ def pagina_relatorio():
     if not num_processo:
         st.info("Informe um número de processo para visualizar os relatórios.")
         return
-    if not st.session_state.itens_analisados:
-        st.warning("Nenhum item foi analisado ainda.")
+
+    erro_proc = validar_processo(num_processo or "")
+    if erro_proc:
+        st.error(erro_proc)
         return
+
     st.markdown("---")
 
     tipo_analise = st.session_state.get("tipo_analise", "N/A")
@@ -947,6 +1094,11 @@ def pagina_relatorio():
 def pagina_lancamento_por_fonte():
     """Fluxo em lote: cadastrar itens/fontes, lançar preços e consolidar."""
     st.title("Lançamento em Lote (por Fonte)")
+    # Garante que itens/fontes/propostas existam mesmo que o usuário
+    # tenha começado pela Análise de Item ou importado um PKL antigo.
+    sincronizar_para_lote_a_partir_de_analisados(force=False)
+
+    
     tabs = st.tabs([
         "1) Itens",
         "2) Fontes",
@@ -990,6 +1142,8 @@ def pagina_lancamento_por_fonte():
         if st.button("Salvar Itens"):
             erros = []
             novos = []
+            
+
 
             def _blank(s):
                 return (s is None) or (isinstance(s, float) and pd.isna(s)) or (str(s).strip() == "")
@@ -1131,44 +1285,60 @@ def pagina_lancamento_por_fonte():
                     "UNID.": st.column_config.TextColumn(disabled=True),
                     "QUANT.": st.column_config.NumberColumn(disabled=True),
                     "PREÇO UNIT.": st.column_config.NumberColumn(format="R$ %.2f", min_value=0.0),
-                    "LOCALIZADOR SEI": st.column_config.TextColumn(),
+                    "LOCALIZADOR SEI": st.column_config.TextColumn(
+                    help="Obrigatório quando houver preço. Formato: 7 dígitos (ex.: 0653878)"
+                    ),
                 },
                 key=f"editor_precos_{fonte_id}",
             )
 
             if st.button("Salvar Preços desta Fonte"):
-                # regrava por item desta fonte
+                erros = []
+                novas_propostas = []
+
                 for i, it in enumerate(st.session_state.itens):
                     preco = edited.iloc[i]["PREÇO UNIT."]
                     sei   = (edited.iloc[i]["LOCALIZADOR SEI"] or "").strip()
 
-                    # se preço vazio → remove proposta existente
+                    # se não informou preço → remover proposta existente (como já era)
                     if preco is None or (isinstance(preco, float) and pd.isna(preco)):
+                        # remove se existir
                         st.session_state.propostas = [
                             p for p in st.session_state.propostas
                             if not (p["item_id"] == it["id"] and p["fonte_id"] == fonte_id)
                         ]
                         continue
 
-                    # grava/atualiza
-                    st.session_state.propostas = [
-                        p for p in st.session_state.propostas
-                        if not (p["item_id"] == it["id"] and p["fonte_id"] == fonte_id)
-                    ]
-                    st.session_state.propostas.append({
+                    # há preço → SEI torna-se obrigatório e com 8 dígitos
+                    msg = validar_sei(sei)
+                    if msg:
+                        erros.append(f"Item '{it['descricao']}': {msg}")
+                        continue
+
+                    novas_propostas.append({
                         "item_id": it["id"],
                         "fonte_id": fonte_id,
                         "preco": float(preco),
                         "sei": sei,
                     })
-                # GA4: salvar preços da fonte
-                ga_event('salvar_precos_fonte', {
-                    'tela': 'lancamento_por_fonte',
-                    'fonte_nome': fonte_nome,
-                     'qtd_itens': int(len(st.session_state.itens)),
-                })
-   
-                st.success("Preços salvos para esta fonte.")
+
+                if erros:
+                    st.error("Não foi possível salvar os preços desta fonte:")
+                    for e in erros:
+                        st.markdown(f"- {e}")
+                else:
+                    # regrava as propostas desta fonte apenas após passar pelas validações
+                    st.session_state.propostas = [
+                        p for p in st.session_state.propostas if p["fonte_id"] != fonte_id
+                    ] + novas_propostas
+
+                    ga_event('salvar_precos_fonte', {
+                        'tela': 'lancamento_por_fonte',
+                        'fonte_nome': fonte_nome,
+                        'qtd_itens': int(len(st.session_state.itens)),
+                    })
+                    st.success("Preços salvos para esta fonte.")
+
 
     # ------------- TAB 4: CONSOLIDAR EM ITENS ANALISADOS -------------
     with tabs[3]:
@@ -1324,15 +1494,15 @@ def pagina_lancamento_por_fonte():
         if buffer:
             st.subheader("Prévia da Consolidação")
             prev_df = pd.DataFrame([b["preview"] for b in buffer])
-            colcfg = {}
-            for c in [
-                "VALOR UNIT. MERCADO", "VALOR TOTAL MERCADO",
-                "VALOR UNIT. MELHOR", "VALOR TOTAL MELHOR",
-                "VALOR UNIT. CONTRATADO", "VALOR TOTAL CONTRATADO"
-            ]:
-                if c in prev_df.columns:
-                    colcfg[c] = st.column_config.NumberColumn(format="R$ %.2f")
-            st.dataframe(prev_df, use_container_width=True, hide_index=True, column_config=colcfg)
+            colcfg = {}            
+            prev_vis = prev_df.copy()
+            for c in ["VALOR UNIT. MERCADO","VALOR TOTAL MERCADO","VALOR UNIT. MELHOR","VALOR TOTAL MELHOR",
+                    "VALOR UNIT. CONTRATADO","VALOR TOTAL CONTRATADO"]:
+                if c in prev_vis.columns:
+                    prev_vis[c + " (BR)"] = prev_vis[c].map(lambda v: formatar_moeda(v) if pd.notna(v) else "")
+            cols_vis = [c for c in prev_vis.columns if c.endswith("(BR)") or c in ["DESCRIÇÃO","UNID.","QTD.","MÉTODO","DADOS DA PROPOSTA"]]
+            st.dataframe(prev_vis[cols_vis], use_container_width=True, hide_index=True)
+            
 
             # Campos de justificativa por item PROBLEMÁTICO
             st.markdown("----")
@@ -1388,8 +1558,7 @@ def pagina_lancamento_por_fonte():
                         'substituir_existentes': bool(substituir),
                     })
 
-
-                    st.dataframe(prev_df, use_container_width=True, hide_index=True, column_config=colcfg)
+                    st.dataframe(prev_vis[cols_vis], use_container_width=True, hide_index=True)
 
                     # limpa prévia (sem rerun, para manter feedback visível)
                     del st.session_state["consol_buffer"]
@@ -1435,26 +1604,32 @@ def pagina_lancamento_por_fonte():
                 # 2) Gerar PDF completo
                 with exp_cols[1]:
                     st.markdown("**Gerar Relatório Final em PDF**")
-                    num_processo_pdf = st.text_input("Nº do Processo (para PDF)", key="num_processo_pdf_final_lanc")
+                    num_processo_pdf = st.text_input("Nº do Processo (para PDF)", key="num_processo_pdf_final_lanc", placeholder="011258/2025")
 
                     if not st.session_state.itens_analisados:
                         st.info("Consolide itens no relatório (acima) para gerar o PDF.")
-                    elif not (num_processo_pdf or "").strip():
-                        st.warning("Informe o nº do processo.")
+                    
                     else:
-                        pdf_bytes = criar_pdf_completo(
-                            st.session_state.itens_analisados,
-                            num_processo_pdf,
-                            st.session_state.tipo_analise
-                        )
-                        st.download_button(
-                            label="📄 Gerar PDF Completo",
-                            data=pdf_bytes,
-                            file_name=f"Relatorio_Completo_{num_processo_pdf.replace('/', '-')}.pdf",
-                            mime="application/pdf",
-                            use_container_width=True,
-                            type="primary",
-                        )
+                        if not (num_processo_pdf or "").strip():
+                            st.warning("Informe o nº do processo.")
+                        else:
+                            erro_proc = validar_processo(num_processo_pdf)
+                            if erro_proc:
+                                st.error(erro_proc)
+                            else:
+                                pdf_bytes = criar_pdf_completo(
+                                    st.session_state.itens_analisados,
+                                    num_processo_pdf,
+                                    st.session_state.tipo_analise
+                                )
+                                st.download_button(
+                                    label="📄 Gerar PDF Completo",
+                                    data=pdf_bytes,
+                                    file_name=f"Relatorio_Completo_{num_processo_pdf.replace('/', '-')}.pdf",
+                                    mime="application/pdf",
+                                    use_container_width=True,
+                                    type="primary",
+                                )
         else:
             st.info("As opções de exportação e PDF ficam disponíveis quando **todos os itens** cadastrados estiverem consolidados no relatório.")
 
@@ -1527,7 +1702,7 @@ Aba **4) Consolidar em Itens Analisados**
 ### ❓ Suporte
 Dúvidas, sugestões e melhorias:
 - **E-mail**: stj.sad@stj.jus.br / morenos@stj.jus.br
-- **Manual STJ**: acesse o *Manual de Pesquisa de Preços do STJ* para as regras de negócio.
+- **Manual STJ**: acesse o *[Manual de Pesquisa de Preços do STJ](https://www.stj.jus.br/publicacaoinstitucional/index.php/MOP/issue/archive).* para as regras normativas.
 """)
 
 # ============================== Bootstrap / Router ==============================
