@@ -7,6 +7,8 @@ import pickle
 import json
 import subprocess
 import datetime
+import base64
+import unicodedata
 from pathlib import Path
 
 import pandas as pd
@@ -30,22 +32,95 @@ st.set_page_config(
 )
 st.logo("assets/logo_stj.png", link="https://www.stj.jus.br", size="large")
 
-# --- Google Analytics (GA4) ---
-GA_MEASUREMENT_ID = "G-E1T298PPDR"  
+# --- Tutoriais em vídeo (pequenos, ao lado do uploader) ---
+def _resolve_video_path(candidates: list[str]) -> str | None:
+    """Tenta os caminhos em 'candidates'; se não achar, procura qualquer .mp4 em /mnt/data e assets/."""
+    for p in candidates:
+        try:
+            if Path(p).exists():
+                return p
+        except Exception:
+            pass
+    for folder in ("/mnt/data", "assets"):
+        try:
+            for mp4 in Path(folder).glob("*.mp4"):
+                return str(mp4)
+        except Exception:
+            pass
+    return None
 
-# injeta o script do GA4 apenas uma vez por sessão
+@st.cache_data(show_spinner=False)
+def _load_video_b64(path: str) -> str:
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode("ascii")
+
+def render_small_video(title: str, candidates: list[str], width_px: int = 200) -> None:
+    """
+    Mostra um player compacto (largura fixa) com fallback.
+    - title: título curto acima do player
+    - candidates: caminhos preferidos (ordem de prioridade)
+    """
+    st.caption(title)
+    path = _resolve_video_path(candidates)
+    if not path:
+        st.info("Vídeo não encontrado. Coloque o MP4 em /mnt/data ou assets/ e recarregue.")
+        try:
+            lista_mnt = [p.name for p in Path("/mnt/data").glob("*.mp4")]
+            lista_assets = [p.name for p in Path("assets").glob("*.mp4")]
+            if lista_mnt or lista_assets:
+                st.caption(f"MP4s — /mnt/data: {lista_mnt or 'nenhum'} • assets/: {lista_assets or 'nenhum'}")
+        except Exception:
+            pass
+        return
+
+    try:
+        b64 = _load_video_b64(path)
+        st.markdown(
+            f"""
+            <div style="max-width:{width_px}px">
+              <video width="{width_px}" controls preload="metadata"
+                     style="border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.08);display:block;">
+                <source src="data:video/mp4;base64,{b64}" type="video/mp4" />
+                Seu navegador não suporta vídeo HTML5.
+              </video>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    except Exception:
+        st.video(path, start_time=0)  # fallback (pode ficar mais largo)
+
+
+# --- Google Analytics (GA4) ---
+GA_MEASUREMENT_ID = "G-E1T298PPDR"
+
 if not st.session_state.get("_ga_loaded", False):
     st.session_state._ga_loaded = True
+    # injeta o loader do gtag e garante 'send_page_view: false' (SPA)
     st.markdown(f"""
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
+    <!-- GA4: loader + config -->
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){{dataLayer.push(arguments);}}
-      gtag('js', new Date());
-      gtag('config', '{GA_MEASUREMENT_ID}');
+      window.gtag = window.gtag || function(){{dataLayer.push(arguments);}};
+      (function() {{
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}';
+        s.onload = function(){{
+          // inicializa GA4, desliga page_view automático (SPA) e habilita debug
+          gtag('js', new Date());
+          gtag('config', '{GA_MEASUREMENT_ID}', {{
+            send_page_view: false,
+            debug_mode: true
+          }});
+          window.__gaReady = true;
+          console.log('[GA] gtag pronto');
+        }};
+        document.head.appendChild(s);
+      }})();
     </script>
     """, unsafe_allow_html=True)
+
 
 # ============================== Estado (session_state) ==============================
 
@@ -231,23 +306,33 @@ def _todos_consolidados() -> bool:
 
 def ga_track_page(page_key: str, page_title: str):
     """
-    Dispara um 'page_view' do GA4 quando a página interna muda.
-    Usa a querystring ?page=... como parte do path para separar as telas.
+    Dispara um page_view 'manual' (SPA) sempre que a 'página interna' muda.
     """
     if not GA_MEASUREMENT_ID:
         return
     safe_title = page_title.replace("'", "\\'")
     safe_path  = f"/app?page={page_key}"
+
     st.markdown(f"""
     <script>
       try {{
-        // envia um page_view "virtual" para o GA4
-        gtag('event', 'page_view', {{
+        const params = {{
           page_title: '{safe_title}',
           page_location: window.location.href,
-          page_path: '{safe_path}'
-        }});
-      }} catch(e) {{}}
+          page_path: '{safe_path}',
+          debug_mode: true
+        }};
+        // se gtag já estiver pronto, dispara; caso contrário, empilha no dataLayer
+        if (window.__gaReady && window.gtag) {{
+          console.log('[GA] page_view', params);
+          gtag('event', 'page_view', params);
+        }} else {{
+          console.warn('[GA] gtag ainda não pronto; empilhando no dataLayer');
+          (window.dataLayer = window.dataLayer || []).push({{ 'event': 'page_view', ...params }});
+        }}
+      }} catch(e) {{
+        console.error('[GA] erro ao enviar page_view', e);
+      }}
     </script>
     """, unsafe_allow_html=True)
 
@@ -256,18 +341,26 @@ def _js_escape(s: str) -> str:
 
 def ga_event(name: str, params: dict | None = None):
     """
-    Dispara um evento GA4 (gtag).
-    Uso: ga_event('nome_evento', {'chave': 'valor', 'valor_numerico': 123})
+    Dispara um evento GA4 com debug e fallback ao dataLayer.
     """
     if not GA_MEASUREMENT_ID:
         return
     payload = json.dumps(params or {}, ensure_ascii=False)
-    safe_name = _js_escape(name)
+
     st.markdown(f"""
     <script>
       try {{
-        gtag('event', '{safe_name}', {payload});
-      }} catch(e) {{}}
+        const _params = Object.assign({payload}, {{ debug_mode: true }});
+        if (window.__gaReady && window.gtag) {{
+          console.log('[GA] event: { _js_escape(name) }', _params);
+          gtag('event', '{_js_escape(name)}', _params);
+        }} else {{
+          console.warn('[GA] gtag ainda não pronto; empilhando evento { _js_escape(name) } no dataLayer');
+          (window.dataLayer = window.dataLayer || []).push({{ 'event': '{_js_escape(name)}', ..._params }});
+        }}
+      }} catch(e) {{
+        console.error('[GA] erro ao enviar evento { _js_escape(name) }', e);
+      }}
     </script>
     """, unsafe_allow_html=True)
 
@@ -595,18 +688,51 @@ def pagina_inicial():
             )
 
     st.divider()
-    st.subheader("Ou Carregue uma Análise Salva")
-    uploaded_file = st.file_uploader("Carregar pesquisa salva (.pkl)", type="pkl", label_visibility="collapsed")
-    if uploaded_file is not None:
-        try:
-            loaded_state = pickle.load(uploaded_file)
-            st.session_state.update(loaded_state)
-            st.success("Análise carregada. Revise os cards acima e escolha como deseja continuar.")
-            # Compat: se o PKL antigo não tinha itens/fontes/propostas,
-            # cria a estrutura do "lote" a partir dos itens analisados.
-            sincronizar_para_lote_a_partir_de_analisados(force=False)
-        except Exception as e:
-            st.error(f"Erro ao carregar o ficheiro: {e}")
+
+    # --- Uploader à esquerda + Tutoriais à direita (lado a lado) ---
+    col_up, col_tut = st.columns([2, 2], gap="large")
+
+    with col_up:
+        st.subheader("Ou Carregue uma Análise Salva")
+        uploaded_file = st.file_uploader(
+            "Carregar pesquisa salva (.pkl)",
+            type="pkl",
+            label_visibility="collapsed"
+        )
+        if uploaded_file is not None:
+            try:
+                loaded_state = pickle.load(uploaded_file)
+                st.session_state.update(loaded_state)
+                st.success("Análise carregada. Revise os cards acima e escolha como deseja continuar.")
+                sincronizar_para_lote_a_partir_de_analisados(force=False)
+            except Exception as e:
+                st.error(f"Erro ao carregar o ficheiro: {e}")
+
+    with col_tut:
+        st.subheader("Quer saber mais sobre a ferramenta?")
+        st.markdown(
+            """
+            <div style="padding:14px 16px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;">
+            <p style="margin:0 0 8px 0;">Na página <b>Guia</b> você encontra:</p>
+            <ul style="margin:0 0 12px 18px;padding:0; color:#374151; font-size:0.95rem; line-height:1.4;">
+                <li>Dois vídeos curtos, sobre a importância da pesquisa de mercado e sobre a ferramenta;</li>
+                <li>Fluxo geral desta ferramenta e dicas rápidas;</li>
+            </ul>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        # Espaço para não "colar" no card
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+        st.button(
+            "Abrir Guia sobre a Ferramenta",
+            icon=":material/play_circle:",
+            type="secondary",
+            use_container_width=True,
+            on_click=lambda: _goto("guia"),
+        )
+
+   
 
 
 def pagina_analise():
@@ -1638,8 +1764,43 @@ def pagina_guia():
     """Guia resumido embutido (sem botão flutuante)."""
     st.title("Guia rápido da Ferramenta de Avaliação de Pesquisa de Mercado")
     st.caption("Versão resumida, embutida no aplicativo • Atalhos e exemplos")
+    
+    st.markdown("---")
+    st.subheader("📹 Tutoriais em vídeo")
+
+    # Para deixar a Guia leve: só carrega os players quando o usuário pedir
+    mostrar = st.toggle("Carregar vídeos", value=False)
+    if mostrar:
+        col_v1, col_v2 = st.columns(2, gap="large")
+
+        with col_v1:
+            st.markdown("**Acertando o Preço (~6 min)**")
+            render_small_video(
+                title="",
+                candidates=[
+                    "/mnt/data/Acertando_o_Preço.mp4",
+                    "assets/Acertando_o_Preço.mp4",
+                ],
+                width_px=600,
+            )
+
+        with col_v2:
+            st.markdown("**Ferramenta de Pesquisa do STJ (~6 min)**")
+            render_small_video(
+                title="",
+                candidates=[
+                    "/mnt/data/Ferramenta_de_Pesquisa_do_STJ.mp4",
+                    "assets/Ferramenta_de_Pesquisa_do_STJ.mp4",
+                ],
+                width_px=600,
+            )
+
+        # (opcional) Telemetria: registrar que os tutoriais foram carregados
+        ga_event('gui_videos_carregados', {'tela': 'guia'})
+    "---"
 
     st.markdown("""
+                
 ### 🧭 Fluxo geral
 1. **Escolha o tipo de análise** na página inicial: *Pesquisa Padrão*, *Prorrogação* ou *Mapa de Preços*.
 2. Siga por um dos caminhos:
