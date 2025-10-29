@@ -16,7 +16,6 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 from streamlit.components.v1 import html as st_html
-from streamlit import st_cache_resource
 
 from unidades import UNIDADES_PERMITIDAS, normalizar_unidade
 from logica import calcular_preco_mercado, arredonda_nbr5891
@@ -772,7 +771,7 @@ def _mk_numeric_version(commit_no: str, date_str: str):
         return f"V{commit_no}{date_str}"
     return ""
 
-@st.cache_resource(show_spinner=False) 
+@st.cache_data(show_spinner=False)
 def get_app_version() -> str:
     """
     Preferência:
