@@ -1,17 +1,42 @@
-# gerador_pdf.py — robusto + análises por modo (Prorrogação / Mapa) + retorno bytes
+# gerador_pdf.py
 
 from fpdf import FPDF
 from datetime import datetime
 import pandas as pd
 import re
+from decimal import Decimal, ROUND_HALF_EVEN
 
 # -------------------- utilitários --------------------
-def br_currency(valor: float) -> str:
+# --- casas decimais padrão para valores unitários no PDF ---
+_DEC_PLACES = 2  # pode ser alterado via set_decimal_places(n)
+
+def set_decimal_places(n: int) -> None:
+    """Define 0..7 casas decimais a serem usadas no PDF."""
+    global _DEC_PLACES
     try:
-        v = float(valor)
+        _DEC_PLACES = max(0, min(7, int(n or 0)))
     except Exception:
-        v = 0.0
-    return f"{v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        _DEC_PLACES = 2
+
+def _quant(n: int) -> Decimal:
+    n = max(0, min(7, int(n or 0)))
+    return Decimal('1') if n == 0 else Decimal('1.' + ('0'*n))
+
+def br_currency(valor: float, casas: int | None = None) -> str:
+    """
+    Formata número para moeda brasileira com arredondamento ABNT NBR 5891
+    (empate para par). Se 'casas' for None, usa o global _DEC_PLACES.
+    Retorna somente o número (sem 'R$').
+    """
+    n = _DEC_PLACES if casas is None else max(0, min(7, int(casas)))
+    try:
+        d = Decimal(str(float(valor))).quantize(_quant(n), rounding=ROUND_HALF_EVEN)
+        s = f"{d:,.{n}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        return s
+    except Exception:
+        z = f"0.{('0'*n)}" if n > 0 else "0"
+        return z
+
 
 def sanitize(txt: str) -> str:
     if txt is None:
@@ -119,7 +144,8 @@ class PDF(FPDF):
         return max_lines * self.line_h
 
     def ensure_space(self, h, redraw_header=False):
-        if self.get_y() + h > (self.h - self.b_margin):
+        FOOTER_SAFE = 18
+        if self.get_y() + h > (self.h - max(self.b_margin, FOOTER_SAFE)):
             self.add_page()
             if redraw_header and self._current_table:
                 headers, widths, aligns, font_size = self._current_table
@@ -190,6 +216,34 @@ class PDF(FPDF):
     def start_table(self, headers, widths, aligns, font_size=8):
         self._current_table = (headers, widths, aligns, font_size)
         self.table_header(headers, widths, aligns, font_size)
+        
+    def bullet_points(self, items, bullet="-", indent=4.5, line_h=6, font=("Helvetica","",9)):
+        """
+        Lista com 'hanging indent': a 1ª linha começa após o marcador
+        e as linhas seguintes alinham sob o texto (não sob o marcador).
+        """
+        self.set_font(*font)
+        bw = float(indent)                # largura da coluna do marcador (mm)
+        tw = self.usable_w - bw           # largura da coluna do texto
+
+        for raw in items or []:
+            txt = sanitize(raw or "")
+            # quebra o parágrafo do item dentro da área de texto
+            lines = self.split_lines(tw, txt) or [""]
+            # 1) primeira linha: marcador + primeira parte do texto
+            self.ensure_space(line_h)
+            x0 = self.l_margin
+            self.set_x(x0)
+            self.cell(bw, line_h, bullet, ln=0)           # marcador
+            self.multi_cell(tw, line_h, lines[0])         # texto (primeira linha)
+
+            # 2) linhas seguintes (se houver): célula vazia na coluna do marcador
+            for line in lines[1:]:
+                self.ensure_space(line_h)
+                self.set_x(x0)
+                self.cell(bw, line_h, "", ln=0)           # mantém recuo
+                self.multi_cell(tw, line_h, line)         # continuação do texto
+              
 
 # -------------------- páginas --------------------
 def pagina_consolidada(pdf: PDF, itens_analisados, tipo_analise):
@@ -267,22 +321,58 @@ def pagina_consolidada(pdf: PDF, itens_analisados, tipo_analise):
         # ITEM | DESCRICAO | METODO | VU(MERC) | VT(MERC) | VU(MELHOR) | VT(MELHOR) | DADOS
         widths  = [14, 70, 28, 28, 32, 28, 32, 50]   # soma = 277
         headers = ["ITEM", "DESCRICAO", "METODO",
-                   "VU(MERC)", "VT(MERC)", "VU(MELHOR)", "VT(MELHOR)", "DADOS"]
-        aligns  = ["C", "L", "C", "R", "R", "R", "R", "L"]
+                "UNT(MERC)", "TOTAL(MERC)", "UNIT(MELHOR)", "TOTAL(MELHOR)", "DADOS"]
+        aligns  = ["C", "L", "C", "C", "C", "C", "C", "L"]
 
         pdf.start_table(headers, widths, aligns, font_size=8)
         rows = []
         for it in itens_analisados:
+           # Base "DADOS"
+            dados = sanitize(it.get("dados_melhor_proposta", ""))
+
+            # 1) unitário final do melhor preço (preferir o salvo; senão dividir o total pela quantidade)
+            vu_best = it.get("valor_unit_melhor_preco", None)
+            if vu_best is None:
+                vu_best = (it.get("valor_total_melhor_preco", 0) / max(1, int(it.get("quantidade", 1))))
+
+            # 2) descobrir TIPO da melhor proposta usando o mesmo unitário final
+            tipo_melhor = ""
+            try:
+                df_o = pd.DataFrame(it.get("df_original", []))
+                if not df_o.empty:
+                    # coluna de preços (aceita PREÇO ou PRECO) + conversão segura p/ numérico
+                    if "PREÇO" in df_o.columns:
+                        col_precos = pd.to_numeric(df_o["PREÇO"], errors="coerce")
+                    else:
+                        col_precos = pd.to_numeric(
+                            df_o.get("PRECO", pd.Series([float("nan")] * len(df_o))),
+                            errors="coerce"
+                        )
+
+                    diffs = (col_precos - float(vu_best)).abs()
+                    if diffs.notna().any():
+                        idxpos = diffs.values.argmin()  # posição, independe do índice original
+                        tipo_melhor = str(df_o.iloc[int(idxpos)].get("TIPO DE FONTE", "") or "")
+            except Exception:
+                tipo_melhor = ""
+
+            # acrescenta TIPO no campo "DADOS" se ainda não estiver
+            if tipo_melhor and "TIPO:" not in dados:
+                dados = (dados + f" | TIPO: {sanitize(tipo_melhor)}").strip()
+
+            # 3) monta a linha
             rows.append([
                 str(it.get("item_num", "")),
                 sanitize(it.get("descricao", "")),
                 sanitize(it.get("metodo_final", "")),
                 "R$ " + br_currency(it.get("valor_unit_mercado", 0)),
                 "R$ " + br_currency(it.get("valor_total_mercado", 0)),
-                "R$ " + br_currency(it.get("valor_unit_melhor_preco", 0)),
-                "R$ " + br_currency(it.get("valor_total_melhor_preco", 0)),
-                sanitize(it.get("dados_melhor_proposta", "")),
+                "R$ " + br_currency(vu_best),                               # UNIT(MELHOR)
+                "R$ " + br_currency(it.get("valor_total_melhor_preco", 0)), # TOTAL(MELHOR)
+                dados,
             ])
+
+            
         pdf.table_rows(rows, widths, aligns, font_size=8)
 
     else:
@@ -311,21 +401,27 @@ def pagina_analise_item(pdf: PDF, item_info, analise):
 
     # --- Título ---
     pdf.set_font("Helvetica", "B", 12)
-    pdf.ensure_space(pdf.line_h)  # garante espaço para a linha do título
+    pdf.ensure_space(pdf.line_h)
     pdf.cell(0, 8, f"ANALISE DETALHADA - ITEM {item_info.get('item_num','')}", ln=1)
     pdf.ln(1)
 
-    # --- Descrição (rótulo + texto longo paginado) ---
+    # --- Descrição (cabeçalho + parágrafo largura total) ---
     desc = sanitize(item_info.get("descricao", "N/A"))
-    pdf.write_label_text("Descricao:", desc, label_w=28, line_h=6)
+    pdf.set_font("Helvetica", "B", 10)
+    pdf.ensure_space(6)
+    pdf.cell(0, 6, "Descricao do Item", ln=1)
+    pdf.set_font("Helvetica", "", 9)
+    # usa multicell de largura total; pagina se precisar
+    pdf.safe_multicell(pdf.usable_w, 6, desc)
+    pdf.ln(1)
 
-    # --- Quantidade / Unidade (uma linha, com verificação de espaço) ---
+    # --- Quantidade / Unidade (linha compacta, sem espaço “sobrando”) ---
     pdf.set_x(pdf.l_margin)
     q = item_info.get("quantidade", "N/A")
     u = sanitize(item_info.get("unidade", "N/A"))
     pdf.ensure_space(6)
     pdf.set_font("Helvetica", "", 10)
-    pdf.multi_cell(0, 5.5, f"Quantidade: {q}    |    Unidade: {u}")
+    pdf.multi_cell(0, 6, f"Quantidade: {q}    |    Unidade: {u}")
 
     # --- Valor contratado (quando Prorrogacao) ---
     if pdf.tipo_analise == "Prorrogacao" and (item_info.get("valor_unit_contratado", 0) or 0) > 0:
@@ -341,66 +437,92 @@ def pagina_analise_item(pdf: PDF, item_info, analise):
     pdf.set_font("Helvetica", "B", 11)
     pdf.cell(0, 7, "Avaliacao Detalhada dos Precos", ln=1)
 
-    widths = [80, 28, 25, 40, 94]
-    headers = ["FONTE", "SEI", "PRECO", "AVALIACAO", "OBSERVACAO"]
-    aligns  = ["L", "C", "R", "C", "L"]
+    # Agora com a coluna TIPO
+    widths = [64, 28, 28, 25, 34, 98]  # FONTE, TIPO, SEI, PRECO, AVALIACAO, OBS (soma = 277)
+    headers = ["FONTE", "TIPO", "SEI", "PRECO", "AVALIACAO", "OBSERVACAO"]
+    aligns  = ["L", "C", "C", "C", "C", "L"]
     pdf.start_table(headers, widths, aligns, font_size=8)
 
     if not df.empty:
         col_fonte = df.get("EMPRESA/FONTE", pd.Series([""] * len(df))).astype(str)
+        col_tipo  = df.get("TIPO DE FONTE", pd.Series([""] * len(df))).astype(str)
         col_sei   = df.get("LOCALIZADOR SEI", pd.Series([""] * len(df))).astype(str)
+        # aceita PREÇO ou PRECO
         col_preco = df.get("PRECO", df.get("PREÇO", pd.Series([0.0] * len(df))))
+        # aceita AVALIAÇÃO ou AVALIACAO
         col_avali = df.get("AVALIACAO", df.get("AVALIAÇÃO", pd.Series([""] * len(df)))).astype(str)
+        # aceita OBSERVAÇÃO_CALCULADA ou OBSERVACAO_CALCULADA
         col_obs   = df.get("OBSERVACAO_CALCULADA", df.get("OBSERVAÇÃO_CALCULADA", pd.Series([""] * len(df)))).astype(str)
 
         rows = []
-        for fonte, sei, preco, ava, obs in zip(col_fonte, col_sei, col_preco, col_avali, col_obs):
-            rows.append([fonte, sei, "R$ " + br_currency(preco), ava, sanitize(obs)])
+        for fonte, tipo, sei, preco, ava, obs in zip(col_fonte, col_tipo, col_sei, col_preco, col_avali, col_obs):
+            rows.append([fonte, tipo, sei, "R$ " + br_currency(preco), ava, sanitize(obs)])
         pdf.table_rows(rows, widths, aligns, font_size=8)
 
     pdf.ln(2)
 
-    # --- Resultados da Analise (garante espaço para 3 linhas) ---
+    # --- Resultados da Analise ---
     pdf.ensure_space(7 + 6 + 6)
     pdf.set_font("Helvetica", "B", 11)
     pdf.cell(0, 7, "Resultados da Analise", ln=1)
     pdf.set_font("Helvetica", "", 10)
-    media  = analise.get("media", 0)
-    cv     = analise.get("coef_variacao", analise.get("coef_variacao", 0)) or analise.get("coef_variacao", 0)
-    minimo = (analise.get("melhor_preco_info", {}) or {}).get("PREÇO", 0)
+
+    media  = float(analise.get("media", 0) or 0)
+    cv     = float(analise.get("coef_variacao", 0) or 0)
+    _mp = (analise.get("melhor_preco_info", {}) or {})
+    minimo = _mp.get("PREÇO", _mp.get("PRECO", 0)) or 0
     metodo = item_info.get("metodo_final", analise.get("metodo_sugerido", "N/A"))
-    pdf.cell(0, 6, f"MEDIA (validos): R$ {br_currency(media)}    COEFICIENTE DE VARIACAO: {float(cv):.2f}%", ln=1)
+
+    pdf.cell(0, 6, f"MEDIA (validos): R$ {br_currency(media)}    COEFICIENTE DE VARIACAO: {cv:.2f}%", ln=1)
     pdf.cell(0, 6, f"PRECO MINIMO (valido): R$ {br_currency(minimo)}    METODO ESTATISTICO: {sanitize(metodo)}", ln=1)
     pdf.ln(2)
 
-    # --- Banners específicos por modo (curtos → só garantir espaço) ---
+    # --- Banners específicos por modo ---
     if pdf.tipo_analise == "Mapa de Precos":
         mp = analise.get("melhor_preco_info", {}) or {}
         melhor_preco = mp.get("PREÇO", 0) or mp.get("PRECO", 0)
         fonte = mp.get("EMPRESA/FONTE", "")
         sei   = mp.get("LOCALIZADOR SEI", "")
-        texto = f"Melhor preco da pesquisa (apos filtros): R$ {br_currency(melhor_preco)} - Fonte: {sanitize(fonte)} | SEI: {sanitize(sei)}"
+        texto = f"Melhor preco da pesquisa (após filtros): R$ {br_currency(melhor_preco)} - Fonte: {sanitize(fonte)} | SEI: {sanitize(sei)}"
         total_h = pdf.para_height(pdf.usable_w, texto, line_h=7)
         pdf.ensure_space(total_h)
+        pdf.set_xy(pdf.l_margin, pdf.get_y())
         pdf.set_font("Helvetica", "B", 10)
         pdf.set_fill_color(*pdf.fill_gray)
         pdf.multi_cell(0, 7, sanitize(texto), border=1, align="C", fill=True)
         pdf.ln(1)
 
+    # preço de mercado CONSISTENTE para todo o restante desta página
+    usar_min = bool(item_info.get("usar_preco_minimo", False))
+    preco_calc = analise.get("preco_mercado")
+    if preco_calc is None:
+        preco_calc = analise.get("preco_mercado_calculado")
+
+    mp_info = analise.get("melhor_preco_info", {}) or {}
+    mp_val  = mp_info.get("PREÇO", mp_info.get("PRECO", 0))
+
+    preco_merc = float(
+        mp_val if usar_min
+        else (preco_calc if preco_calc is not None else item_info.get("valor_unit_mercado", 0))
+    )
+
     if pdf.tipo_analise == "Prorrogacao":
         contratado = float(item_info.get("valor_unit_contratado", 0) or 0)
-        mercado    = float(item_info.get("valor_unit_mercado", 0) or 0)
+        mercado    = float(preco_merc)
         delta = mercado - contratado
         comp = "mais caro" if delta > 0 else ("mais barato" if delta < 0 else "igual")
         txt = (
-            f"Comparacao (unitario): Mercado = R$ {br_currency(mercado)} vs Contratado = R$ {br_currency(contratado)} "
-            f"| Preco de Mercado esta {comp} em R$ {br_currency(abs(delta))}."
+            f"Comparacao (unitario): Mercado = R$ {br_currency(mercado)} "
+            f"vs Contratado = R$ {br_currency(contratado)} | "
+            f"Preco de Mercado esta {comp} em R$ {br_currency(abs(delta))}."
         )
         total_h = pdf.para_height(pdf.usable_w, txt, line_h=7)
         pdf.ensure_space(total_h)
+        pdf.set_xy(pdf.l_margin, pdf.get_y())
         pdf.set_font("Helvetica", "B", 10)
         pdf.set_fill_color(*pdf.fill_gray)
         pdf.multi_cell(0, 7, sanitize(txt), border=1, align="C", fill=True)
+
         aval = sanitize(item_info.get("avaliacao_preco_contratado", ""))
         if aval:
             pdf.ln(1)
@@ -408,7 +530,7 @@ def pagina_analise_item(pdf: PDF, item_info, analise):
             pdf.set_font("Helvetica", "", 10)
             pdf.multi_cell(0, 6, f"Avaliacao: {aval}")
 
-    # --- Problemas (uma linha por item, com paginação) ---
+    # --- Problemas (pagina automaticamente) ---
     problemas = item_info.get("problemas", []) or []
     justificativa = (item_info.get("justificativa", "") or "").strip()
 
@@ -417,9 +539,9 @@ def pagina_analise_item(pdf: PDF, item_info, analise):
         pdf.ensure_space(7)
         pdf.set_font("Helvetica", "B", 11)
         pdf.cell(0, 7, "Problemas encontrados", ln=1)
-        pdf.set_font("Helvetica", "", 9)
-        for p in problemas:
-            pdf.safe_multicell(pdf.usable_w, 6, "- " + sanitize(p))  # << pagina automaticamente
+
+        # lista com hanging indent (cada problema pode quebrar em várias linhas)
+        pdf.bullet_points(problemas, bullet="-", indent=4.5, line_h=6, font=("Helvetica","",9))
         pdf.ln(1)
 
     # --- Justificativa (pode ocupar várias páginas) ---
@@ -428,18 +550,40 @@ def pagina_analise_item(pdf: PDF, item_info, analise):
         pdf.set_font("Helvetica", "B", 11)
         pdf.cell(0, 7, "Justificativa", ln=1)
         pdf.set_font("Helvetica", "", 9)
-        pdf.safe_multicell(pdf.usable_w, 6, sanitize(justificativa))  # << pagina automaticamente
+        pdf.safe_multicell(pdf.usable_w, 6, sanitize(justificativa))
         pdf.ln(1)
 
-    # --- Destaque final ---
-    pdf.ensure_space(9)
-    pdf.set_font("Helvetica", "B", 12)
+    # --- Destaque final (faixa verde robusta) ---
+    msg_final = "PRECO DE MERCADO UNITARIO: R$ " + br_currency(preco_merc)
+
+    pdf.set_xy(pdf.l_margin, pdf.get_y())
     pdf.set_fill_color(*pdf.fill_green)
-    pdf.cell(0, 9, "PRECO DE MERCADO UNITARIO: R$ " + br_currency(item_info.get("valor_unit_mercado", 0)),
-             ln=1, align="C", fill=True)
+    pdf.set_draw_color(190, 220, 190)
+    pdf.set_text_color(0, 100, 0)
+    pdf.set_font("Helvetica", "B", 11)
+
+    line_h = 8
+    reserve_h = pdf.para_height(pdf.usable_w, msg_final, line_h=line_h) + 2
+    pdf.ensure_space(reserve_h)
+
+    pdf.multi_cell(pdf.usable_w, line_h, sanitize(msg_final), border=1, align="C", fill=True)
+    pdf.ln(1)
+
+    # reset estilos pro restante do documento
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.set_font("Helvetica", "", 10)
+
 
 # -------------------- orquestração --------------------
-def criar_pdf_completo(itens_analisados, num_processo, tipo_analise):
+def criar_pdf_completo(
+    itens_analisados,
+    num_processo,
+    tipo_analise,
+    limiar_elevado: int = 25,
+    limiar_inexequivel: int = 75,
+    usar_preco_minimo: bool = False,   # não é reusado aqui; mantido por compat/telemetria
+):
     # padroniza rótulos para evitar acentos/traços que geram erro de fonte
     tipo_norm = (tipo_analise or "").strip()
     if tipo_norm.lower().startswith("prorroga"):
@@ -454,6 +598,10 @@ def criar_pdf_completo(itens_analisados, num_processo, tipo_analise):
     if itens_analisados:
         pagina_consolidada(pdf, itens_analisados, tipo_norm)
 
+    # --- parâmetros globais do PDF para respeitar as casas no recálculo ---
+    casas_pdf = _DEC_PLACES       # CASAS/ABNT: usa o que você definiu via set_decimal_places(...)
+    aplicar_abnt = True           # CASAS/ABNT: manter o arredondamento ABNT (empate para par)
+
     # páginas por item
     for item in itens_analisados:
         df_original = pd.DataFrame(item.get("df_original", []))
@@ -464,10 +612,27 @@ def criar_pdf_completo(itens_analisados, num_processo, tipo_analise):
                 "coef_variacao": 0.0,
                 "melhor_preco_info": {"PREÇO": item.get("valor_unit_mercado", 0)},
                 "metodo_sugerido": item.get("metodo_final", "N/A"),
+                # mantém compatibilidade com pagina_analise_item
+                "preco_mercado_calculado": float(item.get("valor_unit_mercado", 0) or 0),
             }
         else:
             from logica import calcular_preco_mercado
-            analise = calcular_preco_mercado(df_original, 25, 75) or {}
+
+            # critérios do item (com fallback nos globais)
+            item_lim_elev = int(item.get("limiar_elevado", limiar_elevado))
+            item_lim_inex = int(item.get("limiar_inexequivel", limiar_inexequivel))
+            item_casas    = int(item.get("casas_decimais", casas_pdf))
+            item_abnt     = bool(item.get("usar_nbr5891", aplicar_abnt))
+
+            analise = calcular_preco_mercado(
+                df_original,
+                item_lim_elev,
+                item_lim_inex,
+                casas_decimais=item_casas,
+                aplicar_nbr5891=item_abnt,
+            ) or {}
+
+            
             mraw = analise.get("melhor_preco_info", {})
             if isinstance(mraw, pd.Series):
                 analise["melhor_preco_info"] = mraw.to_dict()
@@ -477,3 +642,5 @@ def criar_pdf_completo(itens_analisados, num_processo, tipo_analise):
     # --- retorno como bytes (sem .encode()) ---
     out = pdf.output(dest="S")   # bytes ou bytearray (fpdf2)
     return bytes(out) if isinstance(out, bytearray) else out
+
+# -------------------- fim --------------------

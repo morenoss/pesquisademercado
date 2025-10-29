@@ -234,3 +234,4 @@ button[kind="secondary"]:focus-visible{
 
 /* margem extra para o conteúdo não ficar coberto */
 .block-container{ padding-bottom: calc(var(--footer-h) + 20px); }
+/* ========================================================================== */
