@@ -766,9 +766,9 @@ def _git_commit_date(sha="HEAD", fmt="%d%m%Y"):
     return out
 
 def _mk_numeric_version(commit_no: str, date_str: str):
-    # Formato: V<numero><ddmmyyyy>
+    # Formato: <numero><ddmmyyyy>
     if commit_no and commit_no.isdigit() and re.fullmatch(r"\d{8}", date_str):
-        return f"V{commit_no}{date_str}"
+        return f"{commit_no}{date_str}"
     return ""
 
 @st.cache_data(show_spinner=False)
