@@ -748,27 +748,65 @@ def rodape_stj():
     )
 
 @st.cache_data(show_spinner=False)
+
+# ============================== Versão da Aplicação ==============================
+
+def _run(cmd):
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, check=True).stdout.strip()
+    except Exception:
+        return ""
+
+def _git_commit_count():
+    out = _run(["git", "rev-list", "--count", "HEAD"])
+    return out if out.isdigit() else ""
+
+def _git_commit_date(sha="HEAD", fmt="%d%m%Y"):
+    out = _run(["git", "show", "-s", f"--date=format:{fmt}", "--format=%cd", sha])
+    return out
+
+def _mk_numeric_version(commit_no: str, date_str: str):
+    # Formato: V<numero><ddmmyyyy>
+    if commit_no and commit_no.isdigit() and re.fullmatch(r"\d{8}", date_str):
+        return f"V{commit_no}{date_str}"
+    return ""
+
 def get_app_version() -> str:
     """
-    Ordem de preferência:
-      1) APP_VERSION ou STREAMLIT_APP_VERSION (CI/Rancher)
-      2) (GitLab CI) CI_COMMIT_TAG
-      3) (GitLab CI) pré-release a partir de branch + pipeline + sha
-      4) arquivo VERSION
-      5) git describe --tags
-      6) '0.0.0-dev'
+    Preferência:
+      1) APP_VERSION ou STREAMLIT_APP_VERSION (CI/Rancher/Streamlit)
+      2) (GitLab) CI_COMMIT_TAG
+      3) (GitHub/.git) V<commit_count><ddmmyyyy> do HEAD
+      4) (GitLab) pré-release: branch + pipeline + sha
+      5) arquivo VERSION
+      6) git describe --tags
+      7) '0.0.0-dev'
     """
-    # 1) Vars explícitas (CI ou Rancher Workload)
+    # 1) Variáveis explícitas
     v = os.getenv("APP_VERSION") or os.getenv("STREAMLIT_APP_VERSION")
     if v:
         return v.strip()
 
-    # 2) Em ambiente GitLab CI, usar a tag se existir
+    # 2) GitLab: tag
     if os.getenv("GITLAB_CI") == "true":
         tag = os.getenv("CI_COMMIT_TAG")
         if tag:
             return tag.strip()
-        # 3) Sem tag: gera pré-release descritiva com branch + pipeline + sha curto
+
+    # 3) GitHub Actions ou .git disponível → versão numérica
+    in_github = os.getenv("GITHUB_ACTIONS") == "true" or bool(os.getenv("GITHUB_SHA"))
+    has_git = (_run(["git", "rev-parse", "--is-inside-work-tree"]) == "true")
+    if in_github or has_git:
+        commit_no = _git_commit_count() or os.getenv("GITHUB_RUN_NUMBER", "")
+        sha = os.getenv("GITHUB_SHA", "") or "HEAD"
+        # Data do commit; fallback = hoje (UTC) se o Git não devolver
+        date_str = _git_commit_date(sha=sha, fmt="%d%m%Y") or datetime.utcnow().strftime("%d%m%Y")
+        numeric = _mk_numeric_version(commit_no, date_str)
+        if numeric:
+            return numeric
+
+    # 4) GitLab: pré-release descritiva
+    if os.getenv("GITLAB_CI") == "true":
         ref = os.getenv("CI_COMMIT_REF_NAME", "no-branch")
         ref_norm = re.sub(r"[^0-9A-Za-z_.-]", "-", ref)
         iid = os.getenv("CI_PIPELINE_IID", "")
@@ -780,7 +818,7 @@ def get_app_version() -> str:
             suffix += f"+{sha}"
         return f"0.0.0-{suffix}"
 
-    # 4) Arquivo VERSION
+    # 5) Arquivo VERSION
     vf = Path("VERSION")
     if vf.exists():
         try:
@@ -788,18 +826,12 @@ def get_app_version() -> str:
         except Exception:
             pass
 
-    # 5) git describe (funciona melhor com fetch --tags)
-    try:
-        out = subprocess.run(
-            ["git", "describe", "--tags", "--always", "--dirty"],
-            capture_output=True, text=True, check=True
-        ).stdout.strip()
-        if out:
-            return out
-    except Exception:
-        pass
+    # 6) git describe
+    out = _run(["git", "describe", "--tags", "--always", "--dirty"])
+    if out:
+        return out
 
-    # 6) Fallback
+    # 7) Fallback
     return "0.0.0-dev"
 
 
